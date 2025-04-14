@@ -1,9 +1,14 @@
-
 import './App.css'
+import Header from './components/Header/Header'
+import SwiperBanner from './components/Swiper/Swiper'
 
-function App() {
 
-  return (<></>)
+export default function App() {
+  return (
+  <>
+    <Header/>
+    <SwiperBanner/>
+  </>
+  )
 }
 
-export default App

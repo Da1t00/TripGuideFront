@@ -1,0 +1,27 @@
+.button{
+    background-color: transparent;
+    border-radius: 10px;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    color:#FDF6E3 ;
+    gap:5px;
+}
+.button:hover {
+    background-color: rgba(0, 0, 0, 0.4) ;
+}
+
+.Ibutton{
+    background-color: transparent;
+    border-radius: 100%;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.Ibutton:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+}
