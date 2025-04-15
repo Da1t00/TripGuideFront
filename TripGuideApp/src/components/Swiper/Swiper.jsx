@@ -89,36 +89,36 @@ const slidesData = [
 
 export default function SwiperBanner() {
   return (
-    <>
-    <div className='title'>Best Guides</div>
-    <Swiper
-        loop={true}
-        speed={2000}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: false,
-        }}
-        navigation={true}
-        pagination={{ clickable: true }}
-        mousewheel={true}
-        keyboard={true}
-        modules={[Autoplay, Navigation, Pagination, Mousewheel, Keyboard]}
-        className="mySwiper"
-    >
-      {slidesData.map((slide, index) => (
-        <SwiperSlide key={index}>
-          <GuideBannerSlide
-            bgImage={slide.bgImage}
-            avatar={slide.avatar}
-            author={slide.author}
-            title={slide.title}
-            description={slide.description}
-            date={slide.date}
-            onButtonClick={() => alert(`Переход к посту: ${slide.title}`)}
-          />
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  </>
+    <div style={{paddingBottom: "155px"}}>
+      <div className='title'>Best Guides</div>
+      <Swiper
+          loop={true}
+          speed={2000}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          navigation={true}
+          pagination={{ clickable: true }}
+          mousewheel={true}
+          keyboard={true}
+          modules={[Autoplay, Navigation, Pagination, Mousewheel, Keyboard]}
+          className="mySwiper"
+      >
+        {slidesData.map((slide, index) => (
+          <SwiperSlide key={index}>
+            <GuideBannerSlide
+              bgImage={slide.bgImage}
+              avatar={slide.avatar}
+              author={slide.author}
+              title={slide.title}
+              description={slide.description}
+              date={slide.date}
+              onButtonClick={() => alert(`Переход к посту: ${slide.title}`)}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
   );
 }

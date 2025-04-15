@@ -52,7 +52,7 @@ const WorldMap = () => {
         </div>
       )}
 
-      <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto"
+      <div style={{ width: "100%", maxWidth: "1000px", margin: "0 auto", backgroundColor: "fff"
       }}>
         <ComposableMap projectionConfig={{ scale: 180 }}>
           <Geographies geography={geoUrl}>
@@ -66,14 +66,14 @@ const WorldMap = () => {
                   onClick={() => handleCountryClick(geo)}
                   style={{
                     default: {
-                      fill: "#708090",
-                      stroke: "#ffffff",
+                      fill: "#fff",
+                      stroke: "#708090",
                       strokeWidth: 0.8,
                       outline: "none",
                     },
                     hover: {
-                      fill: "#8B7355 ",
-                      stroke: "#8B7355",
+                      fill: "#CD853F ",
+                      stroke: "#CD853F",
                       strokeWidth: 1.2, 
                       outline: "none",
                       cursor: "pointer",

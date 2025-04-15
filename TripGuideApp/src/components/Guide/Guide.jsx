@@ -4,7 +4,6 @@ import GuideBanner from './GuideInfo/GuideBanner';
 export default function GuideBannerSlide(props) {
   return (
     <div         className="GuideBannerDiv" style={{ position: "relative", height: "60vh",width:"100vh", overflow: "hidden" }}>
-      {/* Размытый фон */}
       <div
         style={{
           backgroundImage: `url(${props.bgImage})`,
