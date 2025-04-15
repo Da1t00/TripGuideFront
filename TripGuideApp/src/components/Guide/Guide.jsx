@@ -1,4 +1,5 @@
 import './Guide.css';
+import GuideBanner from './GuideInfo/GuideBanner';
 
 export default function GuideBannerSlide(props) {
   return (
@@ -19,32 +20,14 @@ export default function GuideBannerSlide(props) {
           zIndex: 0,
         }}
       />
-
-      {/* Контент поверх */}
-      <div
-        className="card"
-        style={{
-          position: "relative",
-          zIndex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-        }}
-      >
-        <div className="avatar"></div>
-        <div className="content">
-          <div className="description"></div>
-          <div className="footer">
-            <div>
-              Автор
-              <br />
-              Дата
-            </div>
-            <div className="arrow">→</div>
-          </div>
-        </div>
-      </div>
+        <GuideBanner
+        avatar={props.avatar}
+        author={props.author}
+        title={props.title}
+        description={props.description}
+        date={props.date}
+        onButtonClick={props.onButtonClick}
+      />
     </div>
   );
 }
