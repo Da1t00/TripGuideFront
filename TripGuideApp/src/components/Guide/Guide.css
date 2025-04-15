@@ -1,0 +1,54 @@
+.GuideBannerDiv {
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    
+  }
+
+  .card {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 20px;
+    border-radius: 10px;
+    
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    background-color: #aaa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .description {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .arrow {
+    font-size: 18px;
+    font-weight: bold;
+  }
