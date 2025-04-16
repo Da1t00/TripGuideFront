@@ -6,7 +6,7 @@ export default function GuideBanner({ avatar, author, title, description, date, 
     <div className="banner-container">
       <div className="banner">
         <div className="avatar-section">
-          <img src={avatar} alt="аватар" className="avatar" />
+          <img src={avatar} alt={author} className="avatar" />
           <div className="author"><strong>{author}</strong></div>
         </div>
         <div className="content">
@@ -20,6 +20,4 @@ export default function GuideBanner({ avatar, author, title, description, date, 
       </div>
     </div>
   );
-};
-
-
+}

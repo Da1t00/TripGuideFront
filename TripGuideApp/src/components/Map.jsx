@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+import { ComposableMap, Geographies, Geography, Graticule } from "react-simple-maps";
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -52,9 +52,44 @@ const WorldMap = () => {
         </div>
       )}
 
-      <div style={{ width: "100%", maxWidth: "1000px", margin: "0 auto", backgroundColor: "fff"
-      }}>
-        <ComposableMap projectionConfig={{ scale: 180 }}>
+      <div 
+        style={{ 
+          width: "100%", 
+          maxWidth: "1200px", 
+          margin: "0 auto",
+          backgroundColor: "#708090", // Light blue background like water
+          borderRadius: "12px",
+          padding: "20px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
+        }}
+      >
+        <ComposableMap
+          projection="geoEqualEarth" // Changed to a more globe-like projection
+          projectionConfig={{
+            scale: 180,
+            center: [0, 0]
+          }}
+        >
+          {/* Add a graticule (grid lines) to represent longitude/latitude lines */}
+          <Graticule stroke="#DDD" strokeWidth={0.5} />
+          
+          {/* Add an "outline" for the globe */}
+          <Geography
+            geography={{
+              type: "Feature",
+              geometry: {
+                type: "Sphere"
+              }
+            }}
+            style={{
+              default: {
+                fill: "#E6F2F8",
+                stroke: "#2B65EC",
+                strokeWidth: 2
+              }
+            }}
+          />
+          
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
               geographies.filter((geo) => geo.properties.name !== "Antarctica").map((geo) => (
@@ -66,15 +101,15 @@ const WorldMap = () => {
                   onClick={() => handleCountryClick(geo)}
                   style={{
                     default: {
-                      fill: "#fff",
+                      fill: "#FDF6e3",
                       stroke: "#708090",
-                      strokeWidth: 0.8,
+                      strokeWidth: 1,
                       outline: "none",
                     },
                     hover: {
-                      fill: "#CD853F ",
+                      fill: "#CD853F",
                       stroke: "#CD853F",
-                      strokeWidth: 1.2, 
+                      strokeWidth: 1.4, 
                       outline: "none",
                       cursor: "pointer",
                     },

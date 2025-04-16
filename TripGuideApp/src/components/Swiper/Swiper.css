@@ -1,31 +1,71 @@
+.title {
+  padding-block: 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
 
-  .title{
-    padding-block: 20px;
-    text-align: center;
-  }
+.swiper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: auto;
+}
 
-  
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #FDF6e3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: black;
+  font-weight: bold;
+}
+
+.swiper-pagination-bullet-active {
+  background: #000;
+  transform: scale(1.2);
+}
+
+/* Media queries for swiper container */
+@media (max-width: 768px) {
   .swiper {
-    width: 70%;
-    height: 100%;
+    width: 95%;
   }
   
-  .swiper-slide {
-    text-align: center;
-    font-size: 18px;
-    background: #FDF6e3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
+  .title {
+    font-size: 20px;
   }
+  
+  /* Hide navigation arrows on mobile */
   .swiper-button-next,
   .swiper-button-prev {
-    color: black;
-    font-weight: bold;
+    display: none !important;
   }
-  .swiper-pagination-bullet-active {
-    background: #000;   /* розовая, например */
-    transform: scale(1.2); /* чуть больше активная точка */
-  }
-  
+}
+
+/* Guide.css */
+.GuideBannerDiv {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  height: 60vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.card {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 20px;
+  border-radius: 10px;
+}

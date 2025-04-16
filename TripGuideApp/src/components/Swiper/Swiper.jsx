@@ -1,5 +1,4 @@
-
-// Import Swiper React components
+// Swiper.jsx
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
@@ -11,6 +10,7 @@ import GuideBannerSlide from '../Guide/Guide'
 import './Swiper.css'
 // import required modules
 import { Navigation, Autoplay, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
+import { useState, useEffect } from 'react';
 
 const slidesData = [
   {
@@ -88,22 +88,50 @@ const slidesData = [
 ];
 
 export default function SwiperBanner() {
+  const [slidesPerView, setSlidesPerView] = useState(1);
+  
+  // Adjust slides per view based on window width
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1200) {
+        setSlidesPerView(1);
+      } else if (window.innerWidth >= 768) {
+        setSlidesPerView(1);
+      } else {
+        setSlidesPerView(1);
+      }
+    };
+    
+    // Set initial value
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
-    <div style={{paddingBottom: "155px"}}>
-      <div className='title'>Best Guides</div>
+    <div style={{paddingBottom: "50px"}}>
+      <h2 className='title'>Best Guides</h2>
       <Swiper
-          loop={true}
-          speed={2000}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          navigation={true}
-          pagination={{ clickable: true }}
-          mousewheel={true}
-          keyboard={true}
-          modules={[Autoplay, Navigation, Pagination, Mousewheel, Keyboard]}
-          className="mySwiper"
+        slidesPerView={slidesPerView}
+        spaceBetween={20}
+        loop={true}
+        speed={2000}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
+        navigation={true}
+        pagination={{ clickable: true }}
+        mousewheel={true}
+        keyboard={true}
+        modules={[Autoplay, Navigation, Pagination, Mousewheel, Keyboard]}
+        className="mySwiper"
       >
         {slidesData.map((slide, index) => (
           <SwiperSlide key={index}>

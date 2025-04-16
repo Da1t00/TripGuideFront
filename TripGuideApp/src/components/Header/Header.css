@@ -2,38 +2,214 @@
     background-color: #CD853F;
     display: grid;
     align-items: center;
-    grid-template-columns: 300px 1fr 300px;
-    height: 80px; /* желательно задать фиксированную высоту */
+    grid-template-columns: auto 1fr auto;
+    height: 90px; /* Увеличенная высота хедера (было 80px) */
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000; /* чтобы хедер был поверх других элементов */
+    z-index: 1000;
+    padding: 0 30px; /* Увеличенные горизонтальные отступы (было 20px) */
 }
 
-.logo{
-    max-width: 160px ;
-    max-height: 100px;
+.logo {
+    max-width: 180px; /* Увеличено с 160px */
+    max-height: 110px; /* Увеличено со 100px */
     display: flex;
     gap: 6px;
-    padding-bottom: 5%;
-    padding-top: 5%;
-    padding-left: 10%;
+    padding: 10px 0;
 }
-.buttonContainer{
+
+.buttonContainer {
     display: flex;
     align-items: center;
-    margin-right: auto;
-    margin-left: auto;
-    gap: 10px;
-
+    justify-content: center;
+    gap: 20px; /* Увеличенные отступы между кнопками (было 15px) */
 }
+
+/* Увеличение размера текста в кнопках навигации для ПК */
+.button span {
+    font-size: 18px; /* Увеличенный размер текста (был стандартным) */
+    font-weight: 500; /* Чуть более жирный шрифт для лучшей читаемости */
+}
+
 .profile {
     display: flex;
     align-items: center;
-    position: relative;
     height: 100%;
     justify-content: flex-end;
     gap: 20px;
-    padding-right: 10%;
+}
+
+/* Увеличение размера текста кнопки Sign In для ПК */
+.Sbutton span {
+    font-size: 18px; /* Увеличенный размер текста (был стандартным) */
+    font-weight: 500;
+}
+
+/* Стили для мобильного меню */
+.mobileMenuBtn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: auto;
+}
+
+/* Правое выдвижное меню */
+.mobileMenu {
+    position: fixed;
+    top: 0;
+    right: -220px; /* Начальная позиция за экраном */
+    width: 220px;
+    height: 100vh;
+    background-color: #CD853F;
+    transition: right 0.3s ease;
+    z-index: 1001;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+/* Заголовок мобильного меню */
+.mobileMenuHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 15px;
+    border-bottom: 1px solid rgba(253, 246, 227, 0.3);
+}
+
+.mobileMenuHeader h3 {
+    color: #FDF6E3;
+    margin: 0;
+    font-size: 18px;
+}
+
+.closeMenuBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobileMenuContent {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 5px;
+}
+
+/* Разделитель между кнопками меню */
+.menuDivider {
+    height: 1px;
+    background-color: rgba(253, 246, 227, 0.2);
+    margin: 5px 0;
+    width: 100%;
+}
+
+.mobileMenuOpen .mobileMenu {
+    right: 0; /* Показываем меню */
+    display: block;
+}
+
+/* Overlay для закрытия меню при клике вне */
+.menuOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Медиа-запросы для адаптивности */
+@media screen and (min-width: 1025px) {
+    /* Стили только для больших экранов (ПК) */
+    .button, .Sbutton {
+        padding: 8px 16px; /* Увеличенные отступы в кнопках */
+    }
+    
+    /* Размер иконок для больших экранов */
+    .button svg, .Sbutton svg {
+        width: 22px; /* Увеличено с 20px */
+        height: 22px; /* Увеличено с 20px */
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .header {
+        height: 85px; /* Чуть меньше для планшетов */
+        grid-template-columns: auto 1fr auto;
+        padding: 0 15px;
+    }
+    
+    .buttonContainer {
+        gap: 10px;
+    }
+    
+    .button span, .Sbutton span {
+        font-size: 16px; /* Чуть меньше для планшетов */
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header {
+        height: 80px; /* Возвращаем исходный размер для мобильных */
+        grid-template-columns: auto 1fr auto;
+    }
+    
+    .buttonContainer .button span {
+        display: none; /* Скрываем текст кнопок, оставляем только иконки */
+    }
+    
+    .profile {
+        gap: 10px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .header {
+        grid-template-columns: auto auto;
+        justify-content: space-between;
+    }
+    
+    .mobileMenuBtn {
+        display: block;
+        order: 2;
+    }
+    
+    .buttonContainer {
+        display: none; /* Скрываем навигацию на маленьких экранах */
+    }
+    
+    .profile {
+        display: none; /* Скрываем кнопку Sign In на маленьких экранах */
+    }
+    
+    /* Стиль для кнопок в мобильном меню */
+    .mobileMenuContent .button,
+    .mobileMenuContent .Sbutton {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 12px 15px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+    
+    .mobileMenuContent .button:hover,
+    .mobileMenuContent .Sbutton:hover {
+        background-color: rgba(253, 246, 227, 0.1);
+    }
+    
+    .mobileMenuContent .button span,
+    .mobileMenuContent .Sbutton span {
+        display: inline-block;
+        margin-left: 10px;
+        font-size: 16px; /* Размер для мобильного меню */
+    }
 }
