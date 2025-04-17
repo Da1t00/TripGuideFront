@@ -10,6 +10,7 @@ import SwiperBanner from './components/Swiper/Swiper'
 export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Check if the screen size is mobile
   useEffect(() => {
@@ -27,11 +28,27 @@ export default function App() {
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
+  // Check authentication status when the component mounts
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    setIsAuthenticated(!!accessToken);
+  }, []);
+
+  const handleAuthClose = () => {
+    setIsAuthOpen(false);
+    // Check if user got authenticated after modal closes
+    const accessToken = localStorage.getItem('accessToken');
+    setIsAuthenticated(!!accessToken);
+  };
+
   return (
     <>
-      <Header onSignInClick={() => setIsAuthOpen(true)} />
+      <Header 
+        onSignInClick={() => setIsAuthOpen(true)} 
+        isAuthenticated={isAuthenticated}
+      />
       {isAuthOpen && (
-        <Authorize onClose={() => setIsAuthOpen(false)} />
+        <Authorize onClose={handleAuthClose} />
       )}
       <div style={{marginTop:"80px"}}>
         <div style={{backgroundColor:"#FDF6e3"}}><SwiperBanner/></div>

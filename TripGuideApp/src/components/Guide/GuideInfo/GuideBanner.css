@@ -73,7 +73,7 @@
 .arrow-button {
   align-self: flex-end;
   padding: 8px 16px;
-  background-color: #007bff;
+  background-color: #3E3E3E;
   color: white;
   border: none;
   border-radius: 6px;
@@ -83,7 +83,7 @@
 }
 
 .arrow-button:hover {
-  background-color: #0056b3;
+  background-color: #3D2813;
 }
 
 /* Media queries for responsive design */
