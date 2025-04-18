@@ -1,0 +1,245 @@
+.profile-container {
+  background-color: #FDF6E3;
+  min-height: calc(100vh - 80px);
+  width: 100%;
+}
+
+.content-wrapper {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 20px;
+}
+
+.main-content {
+  flex: 1;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.profile-image-container {
+  position: relative;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #e8d5a8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-placeholder {
+  font-size: 14px;
+  color: #675c43;
+  text-align: center;
+}
+
+.upload-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #CD853F;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #FDF6E3;
+}
+
+.delete-image-button {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: #e74c3c;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #FDF6E3;
+  padding: 0;
+  border: none;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.user-info-section {
+  padding-top: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e8d5a8;
+  padding-bottom: 10px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.edit-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+  background-color: #2980b9;
+}
+
+.edit-button.save-button {
+  background-color: #2ecc71;
+}
+
+.edit-button.save-button:hover {
+  background-color: #27ae60;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.info-item {
+  background-color: #f7f1e3;
+  padding: 15px;
+  border-radius: 6px;
+  flex: 1;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.info-item label {
+  font-weight: bold;
+  margin-right: 10px;
+  min-width: 100px;
+}
+
+
+
+
+
+.select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  flex: 1;
+}
+
+.about-section {
+  margin-bottom: 30px;
+}
+
+.about-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.about-textarea {
+  width: 100%;
+  height: 120px;
+  background-color: #f7f1e3;
+  border-radius: 6px;
+  padding: 15px;
+  min-height: 120px;
+}
+
+.about-textarea.editable {
+  border: 1px solid #ddd;
+  background-color: white;
+  resize: vertical;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+.section-actions {
+  gap: 10px;
+  display: flex;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+    padding: 10px;
+  }
+  
+  .profile-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .profile-image-container {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+  
+  .main-content {
+    padding: 15px;
+  }
+}
