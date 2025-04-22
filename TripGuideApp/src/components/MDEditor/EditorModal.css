@@ -1,0 +1,289 @@
+.editorModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    overflow: hidden;
+  }
+  
+  .editorModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .editorModalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+  }
+  
+  .editorModalHeader h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+  }
+  
+  .closeModalBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .closeModalBtn:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .editorForm {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .formGroup label {
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .titleInput {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .logoInput {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .descriptionInput {
+    width: 100%;
+    height: 120px;
+    background-color: #f7f1e3;
+    border-radius: 6px;
+    padding: 15px;
+    min-height: 120px;
+    border: 1px solid #ddd;
+    background-color: white;
+    resize: vertical;
+  }
+  
+  .editorContainer {
+    flex: 1;
+    min-height: 0;
+  }
+  
+  .editorModalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    z-index: 10;
+  }
+  
+  .cancelBtn, .saveBtn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .cancelBtn {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #666;
+  }
+  
+  .cancelBtn:hover {
+    background-color: #eee;
+  }
+  
+  .saveBtn {
+    background-color: #CD853F;
+    border: 1px solid #CD853F;
+    color: white;
+  }
+  
+  .saveBtn:hover {
+    background-color: #b67430;
+  }
+  
+  /* Стили для адаптации редактора Markdown */
+  .rc-md-editor {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .rc-md-navigation {
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #eee;
+    padding: 4px;
+  }
+  
+  .section {
+    flex: 1;
+    min-height: 0;
+  }
+  
+  .editorHtml, .editorMarkdown {
+    height: 100%;
+    overflow: auto;
+  }
+  
+  /* Медиа-запросы для адаптивности */
+  @media (max-width: 768px) {
+    .editorModal {
+      width: 95%;
+      height: 95vh;
+      max-height: 95vh;
+      top: 50%;
+      border-radius: 6px;
+    }
+    
+    .editorModalHeader {
+      padding: 10px 12px;
+    }
+    
+    .editorModalHeader h2 {
+      font-size: 1.1rem;
+    }
+    
+    .editorForm {
+      padding: 12px;
+      gap: 12px;
+    }
+    
+    .formGroup {
+      gap: 6px;
+    }
+    
+    .formGroup label {
+      font-size: 0.9rem;
+    }
+    
+    .titleInput {
+      padding: 8px 10px;
+      font-size: 0.95rem;
+    }
+    
+    .editorModalFooter {
+      padding-top: 12px;
+      margin-top: 12px;
+      gap: 8px;
+    }
+    
+    .cancelBtn, .saveBtn {
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+    
+    .rc-md-navigation {
+      padding: 2px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .editorModal {
+      width: 100%;
+      height: 100vh;
+      max-height: 100vh;
+      top: 0;
+      left: 0;
+      transform: none;
+      border-radius: 0;
+    }
+    
+    .editorModalHeader {
+      padding: 8px 10px;
+    }
+    
+    .editorForm {
+      padding: 10px;
+      gap: 10px;
+    }
+    
+    .titleInput {
+      padding: 6px 8px;
+    }
+    
+    .editorModalFooter {
+      padding: 8px 10px;
+    }
+    
+    /* Упрощение интерфейса редактора для маленьких экранов */
+    .rc-md-navigation .button-wrap .button {
+      margin: 0 2px;
+      padding: 2px;
+    }
+  }
+  /* Добавьте это в ваш файл EditorModal.css */
+
+/* Центрирование иконок в кнопках панели инструментов редактора */
+.rc-md-navigation .button-wrap .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+  }
+  
+  /* Обеспечение центрирования иконок при разных размерах экрана */
+  @media (max-width: 768px) {
+    .rc-md-navigation .button-wrap .button {
+      padding: 3px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .rc-md-navigation .button-wrap .button {
+      padding: 2px;
+    }
+  }
+  
