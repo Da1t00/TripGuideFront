@@ -44,8 +44,6 @@ export default function Authorize({ onClose }) {
             nickname: verificationData.nickname,
             verification_code: ""
           }));
-          
-
         }
       } catch (error) {
         console.error("Error parsing pending verification data:", error);
@@ -53,6 +51,43 @@ export default function Authorize({ onClose }) {
       }
     }
   }, []);
+
+  // Функция для получения данных пользователя с бэкенда
+  const fetchUserData = async () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      
+      if (!accessToken) {
+        console.error("No access token found");
+        return;
+      }
+      
+      const response = await axios.get('http://localhost:8000/user/get_info', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      
+      const userData = {
+        age: response.data.age === "None" ? 0 : Number(response.data.age),
+        cof: response.data.cof === "None" ? 0 : Number(response.data.cof),
+        username: response.data.username ?? null,
+        gender: response.data.gender ?? null,
+        about: response.data.about ?? null,
+        nickname: response.data.nickname ?? null,
+      };
+      localStorage.setItem("userData", JSON.stringify(userData));
+
+      
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        // Если токен недействителен или истек
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        setErrorMessage("Session expired. Please login again.");
+      }
+    }
+  };
 
   const togglePasswordVisibility = () => setShowPassword(prev => !prev);
 
@@ -202,6 +237,9 @@ export default function Authorize({ onClose }) {
           
           // Clear any pending verification data
           clearPendingVerification();
+          
+          // Получаем данные пользователя сразу после успешной авторизации
+          await fetchUserData();
           
           setSuccessMessage("Login successful!");
           // Close modal or redirect after successful login

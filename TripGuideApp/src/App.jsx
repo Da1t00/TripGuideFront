@@ -6,7 +6,8 @@ import Header from './components/Header/Header'
 import WorldMap from './components/Map'
 import Authorize from './components/Auth/Auth'
 import SwiperBanner from './components/Swiper/Swiper'
-import ProfileSettings from './components/Profile/Profile' // Импортируем компонент профиля
+import ProfileSettings from './components/Profile/ProfileSettings/ProfileSettings'
+import ProfilePage from './components/Profile/Profile/Porfile';
 import refreshToken from './utils/refreshToken'
 
 export default function App() {
@@ -79,10 +80,7 @@ export default function App() {
           
           <Route path="/profile" element={
             <ProtectedRoute>
-              <div style={{backgroundColor:"#FDF6e3", padding: "20px"}}>
-                <h1>Профиль</h1>
-                <p>Страница настроек в разработке</p>
-              </div>
+              <ProfilePage/>
             </ProtectedRoute>
           } />
           
