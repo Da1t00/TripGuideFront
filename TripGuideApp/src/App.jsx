@@ -9,6 +9,8 @@ import SwiperBanner from './components/Swiper/Swiper'
 import ProfileSettings from './components/Profile/ProfileSettings/ProfileSettings'
 import ProfilePage from './components/Profile/Profile/Porfile';
 import refreshToken from './utils/refreshToken'
+import GuideViewer from './components/GuideViewer/GuideViewer';
+import CatalogPage from './components/CatalogPage/CatalogPage';
 
 export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -71,7 +73,17 @@ export default function App() {
               )}
             </>
           } />
-          
+           <Route path="/catalog" element={
+            <ProtectedRoute>
+              <CatalogPage/>
+              
+            </ProtectedRoute>
+          } />
+          <Route path="/catalog/view_guide/:id" element={
+            <ProtectedRoute>
+              <GuideViewer/>
+            </ProtectedRoute>
+            } />
           <Route path="/settings" element={
             <ProtectedRoute>
               <ProfileSettings/>
@@ -80,7 +92,7 @@ export default function App() {
           
           <Route path="/profile" element={
             <ProtectedRoute>
-              <ProfilePage/>
+              {/* <GuideViewer/> */}
             </ProtectedRoute>
           } />
           

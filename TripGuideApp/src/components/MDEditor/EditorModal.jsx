@@ -1,37 +1,43 @@
 import { useState, useEffect } from 'react';
 import './EditorModal.css';
 import * as I from 'lucide-react';
-
 import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
 import 'react-markdown-editor-lite/lib/index.css';
-
+import axios from 'axios';
+ 
 const mdParser = new MarkdownIt({
   html: false,
   linkify: true,
   typographer: false,
-  breaks: false,
+  breaks: true,
+});
 
-})
+const geoUrl = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
 
-  
 
-export default function EditorModal({ isOpen, onClose, onSave }) {
-  const [content, setContent] = useState('');
+export default function EditorModal({ isOpen, onClose}) {
+  const [markdown_text, setContent] = useState('');
   const [title, setTitle] = useState('');
-  const [logo, setLogo] = useState('');
+  const [logoFile, setLogoFile] = useState(null);
   const [description, setDescription] = useState('');
+  const [isDisabled, setIsDisabled] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Reset form when modal is opened
   useEffect(() => {
     if (isOpen) {
-      setLogo('');
+      setLogoFile('');
       setDescription('');
       setContent('');
       setTitle('');
+      setSelectedType('');
+      setSelectedCountry('');
+      setTags([]);
+      setIsDisabled(false);
     }
   }, [isOpen]);
+  
 
   // Handle window resize
   useEffect(() => {
@@ -46,43 +52,153 @@ export default function EditorModal({ isOpen, onClose, onSave }) {
   const handleEditorChange = ({ text }) => {
     setContent(text);
   };
-  const handleImageUpload = (file) => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const url = reader.result;
-        resolve(url);
-      };
-      reader.readAsDataURL(file);
-    });
+
+  // Function to upload image to your API endpoint using axios
+  const uploadImageToServer = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await axios.post('http://localhost:8000/guide/guide_image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      return response.data.image_url;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+      return null;
+    }
   };
+  
+  // Handle image upload in the markdown editor
+  const handleImageUpload = async (file) => {
+    try {
+      // Upload the file to your server
+      const imageUrl = await uploadImageToServer(file);
+      
+      if (imageUrl) {
+        // Return the URL to be inserted into the editor
+        return imageUrl;
+      }
+      
+      // If upload fails, you can still use file reader as fallback for preview
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    } catch (error) {
+      console.error('Error in image upload:', error);
+      return null;
+    }
+  };
+
+  // Keep original logo handling
+  const handleLogoChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setLogoFile(selectedFile);
+    }
+  };
+
+
+
+  const handleSaveContent = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+    const formData = new FormData();
+  
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('markdown_text', markdown_text);
+  
+    if (logoFile) {
+      formData.append('logo', logoFile);
+    }
+    tags.forEach(tag => {
+      formData.append('tags', tag);
+    });
+  
+    try {
+      await axios.post('http://localhost:8000/guide/save_guide', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      alert('Guide saved successfully!');
+    } catch (error) {
+      console.error('Error saving guide:', error.response?.data || error.message);
+      alert('Error saving guide!');
+    }
+  };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (!title.trim()) {
-      alert('Please enter a title');
+    if (!title.trim() || !description.trim()) {
+      alert('Please fill out all fields');
       return;
     }
-    if (!description.trim()) {
-      alert('Please enter a discription');
-      return;
-    }
-    if (!logo.trim()) {
-      alert('Please enter a logo image');
-      return;
-    }
-    
-    onSave({
-      title,
-      description,
-      logo,
-      content,
-      createdAt: new Date().toISOString()
-    });
-    
+    handleSaveContent();
     onClose();
   };
+
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [tags, setTags] = useState([]);
+  
+  const categories = ["Food", "Trip", "Hotels"];
+  const [countries, setCountries] = useState([]);
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const res = await fetch(geoUrl);
+        const data = await res.json();
+        const countryNames = data.features.map(d => d.properties.name);
+  
+        // Сортировка
+        countryNames.sort((a, b) => a.localeCompare(b));
+        setCountries(countryNames);
+      } catch (error) {
+        console.error("Ошибка при загрузке стран:", error);
+      }
+    };
+    fetchCountries();
+  }, []);
+  
+
+  const addTypeTag = () => {
+    const tag = selectedType;
+    if (selectedType && !tags.includes(tag)) {
+      setTags([...tags, tag]);      
+      setSelectedType('');
+    }
+    if (tags.length == 5) {
+      setIsDisabled(true); 
+    }
+  };
+
+  const addCountryTag = () => {
+    const tag = selectedCountry;
+    if (selectedCountry && !tags.includes(tag)) {
+      setTags([...tags, tag]);
+      setSelectedCountry('');
+
+    }
+    if (tags.length == 5) {
+      setIsDisabled(true); 
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+  
 
   if (!isOpen) return null;
 
@@ -103,6 +219,7 @@ export default function EditorModal({ isOpen, onClose, onSave }) {
             <input
               type="text"
               id="title"
+              maxLength="80"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter post title"
@@ -111,24 +228,84 @@ export default function EditorModal({ isOpen, onClose, onSave }) {
             />
             <label>Description</label>
             <textarea
-            name="textarea"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter post discription"
-            className="descriptionInput"
-            required
+              name="textarea"
+              value={description}
+              maxLength="300"
+
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter post description"
+              className="descriptionInput"
+              required
             />
             <label>Post logo image</label>
             <input
               type="file"
-              id="logo"
-              value={logo}
-              onChange={(e) => setLogo(e.target.value)}
+              id="logoFile"
+              onChange={handleLogoChange}
               placeholder="Enter post logo"
               className="logoInput"
               required
             />
+            
+            <label>Tags</label>
+            <div className="tagInputContainer">
+              {/* Выбор типа */}
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="tagInput"
+              >
+                <option value="">Choose type/types of guide</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="addTagBtn"
+                disabled={isDisabled}
+                onClick={addTypeTag}
+              >
+                <I.Plus size={12} />
+              </button>
 
+              {/* Выбор страны */}
+              <select
+                value={selectedCountry}
+                onChange={(e) => setSelectedCountry(e.target.value)}
+                className="tagInput"
+              >
+                <option value="">Choose country/countries of guide</option>
+                {countries.filter((country) => country !== "Antarctica").map((country) => (
+                  <option key={country} value={country}>{country}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="addTagBtn"
+                disabled={isDisabled}
+                onClick={addCountryTag}
+              >
+                <I.Plus size={12} />
+              </button>
+            </div>
+            
+            {tags.length > 0 && (
+              <div className="tagsContainer">
+                {tags.map((tag, index) => (
+                  <div key={index} className="tagItem">
+                    <span>{tag}</span>
+                    <button 
+                      type="button" 
+                      className="removeTagBtn" 
+                      onClick={() => removeTag(tag)}
+                    >
+                      <I.X size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           
           <div className="formGroup editorContainer">
@@ -148,8 +325,9 @@ export default function EditorModal({ isOpen, onClose, onSave }) {
                 'clear',
                 'logger',
                 'mode-toggle',
-                'full-screen']}
-              value={content}
+                'full-screen'
+              ]}
+              value={markdown_text}
               config={{
                 view: { menu: true, md: true, html: true },
                 canView: { menu: true, md: true, html: true, fullScreen: true },

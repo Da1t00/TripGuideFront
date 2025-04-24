@@ -62,11 +62,7 @@ export default function Header({ onSignInClick, isAuthenticated }) {
         setProfileOpen(false);
     };
     
-    const handleSaveContent = (data) => {
-        // Here you would handle saving the content
-        console.log('Saving content:', data);
-        // Implement your API call or state management logic here
-    };
+
     
     // Close menus when clicking outside
     useEffect(() => {
@@ -107,6 +103,7 @@ export default function Header({ onSignInClick, isAuthenticated }) {
                         class="button" 
                         text="Catalog" 
                         icon={<I.Layers size={20} color="#FDF6E3" />} 
+                        onClick={() => handleNavigation('/catalog')}
                     />
                 </div>
                 
@@ -285,7 +282,6 @@ export default function Header({ onSignInClick, isAuthenticated }) {
             <EditorModal 
                 isOpen={editorModalOpen} 
                 onClose={() => setEditorModalOpen(false)} 
-                onSave={handleSaveContent}
             />
         </>
     );

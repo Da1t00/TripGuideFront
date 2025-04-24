@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography, Graticule } from "react-simple-maps";
 
-const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const geoUrl = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
 
 const WorldMap = () => {
   const [tooltipContent, setTooltipContent] = useState(null);

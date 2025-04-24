@@ -1,0 +1,281 @@
+/* CatalogPage.css */
+
+/* Main layout */
+.catalog-page-container {
+    background-color: #FDF6E3;
+    min-height: 100vh;
+    position: relative;
+  }
+  
+  .catalog-container {
+    display: flex;
+    min-height: 100vh;
+    margin-inline: 250px;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 24px;
+  }
+  
+  .filter-sidebar {
+    width: 260px;
+    background-color: white;
+    padding: 16px;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Typography */
+  .page-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 24px;
+  }
+  
+  .filter-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    
+  }
+  
+  /* Guides grid */
+  .guides-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  
+  .guide-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 350px;
+    min-width: 350px;
+  }
+  
+  .guide-button{
+    
+    padding: 8px 16px;
+    background-color: #3E3E3E;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 50px;
+    margin-left: 207px;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Logo container and image styling - FIXED */
+  .catalog-logo-container {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .guide-logo {
+    max-width: 100%;
+    object-fit: contain;
+  }
+  
+  .guide-info {
+    width: 100%;
+    margin-top: 20px;
+    height: 80px;
+  }
+  
+  .guide-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .guide-description {
+    color: #666;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .menuDivider {
+    height: 1px;
+    background-color: rgba(5, 5, 5, 0.2);
+    margin: 5px 0;
+    width: 100%;
+}
+  .filter-subtitle{
+    border-radius: 10px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+  }
+  .guide-tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+    margin-bottom: 10px;
+  }
+  /* Empty state */
+  .empty-state {
+    background-color: white;
+    border-radius: 8px;
+    padding: 48px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .empty-state p {
+    font-size: 20px;
+    color: #777;
+    margin: 0;
+  }
+  
+  /* Filter components */
+  .filter-group {
+    margin-bottom: 16px;
+  }
+  
+  .filter-label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  
+  .search-input {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+  }
+  
+  .checkbox-input {
+    margin-right: 8px;
+  }
+  .checkbox-input:hover {
+    cursor: pointer;
+  }
+  
+    
+  
+  /* Mobile filter toggle button */
+  .mobile-filter-button {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    cursor: pointer;
+  }
+  
+  .mobile-filter-close {
+    display: none;
+    text-align: center;
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 1440px) {
+    .catalog-container {
+      margin-inline: 100px;
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .catalog-container {
+      margin-inline: 50px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .catalog-container {
+      margin-inline: 20px;
+      flex-direction: column;
+    }
+    
+    .filter-sidebar {
+      width: 100%;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      order: 2;
+      display: none;
+    }
+  
+    .filter-sidebar.mobile-visible {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .mobile-filter-button {
+      display: block;
+    }
+    
+    .mobile-filter-close {
+      display: block;
+    }
+    
+    .guides-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .catalog-container {
+      margin-inline: 10px;
+    }
+    
+    .main-content {
+      padding: 16px;
+    }
+    
+    .page-title {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    
+    .guide-logo-container {
+      height: 120px;
+    }
+    
+    .guide-logo {
+      max-height: 120px;
+    }
+  }
