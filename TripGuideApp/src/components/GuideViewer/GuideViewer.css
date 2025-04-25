@@ -35,7 +35,8 @@
   max-height: 210px;
   }
 .guide-title-container{
-  min-height: 130px;
+  min-height: 100px;
+  max-height: 100px;
 }
 
 .guide-title {
@@ -78,8 +79,8 @@
 }
 
 .guide-logo {
-  width: 100%;
-  height: auto;
+  width: 300px;
+  max-height: 150px;
   object-fit: cover;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -89,7 +90,7 @@
 .guide-author-info {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+
 }
 
 .guide-stats {
@@ -126,7 +127,11 @@
   font-size: 14px;
   color: #777;
 }
+.guide-buttons-container {
+  display: flex;
+  gap: 20px;
 
+}
 .like-button {
   display: flex;
   align-items: center;
@@ -142,6 +147,23 @@
 }
 
 .like-button:hover {
+  background-color: #f8f8f8;
+}
+.edit-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+  gap: 6px;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.edit-button:hover {
   background-color: #f8f8f8;
 }
 
@@ -167,7 +189,7 @@
 }
 
 /* Адаптивность для больших планшетов */
-@media (max-width: 992px) {
+/* @media (max-width: 992px) {
   .guide-header {
     gap: 24px;
   }
@@ -183,10 +205,10 @@
   .guide-title-container{
     height: 140px;
   }
-}
+} */
 
 /* Адаптивность для малых планшетов */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .guide-viewer {
     padding: 16px;
   }
@@ -225,7 +247,6 @@
   }
 }
 
-/* Адаптивность для мобильных устройств */
 @media (max-width: 480px) {
   .guide-viewer {
     padding: 12px;
@@ -269,7 +290,6 @@
   }
 }
 
-/* Адаптивность для малых мобильных устройств */
 @media (max-width: 360px) {
   .guide-viewer {
     padding: 10px;
@@ -291,4 +311,4 @@
     padding: 3px 8px;
     font-size: 12px;
   }
-}
+} */

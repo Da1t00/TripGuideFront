@@ -6,26 +6,21 @@ import Header from './components/Header/Header'
 import WorldMap from './components/Map'
 import Authorize from './components/Auth/Auth'
 import SwiperBanner from './components/Swiper/Swiper'
-import ProfileSettings from './components/Profile/ProfileSettings/ProfileSettings'
-import ProfilePage from './components/Profile/Profile/Porfile';
+import ProfileSettings from './components/ProfileSettings/ProfileSettings'
+import ProfilePage from './components/Profile/Profile';
 import refreshToken from './utils/refreshToken'
 import GuideViewer from './components/GuideViewer/GuideViewer';
 import CatalogPage from './components/CatalogPage/CatalogPage';
+import EditGuide from './components/EditGuide/EditGuide';
+import MyGuideViewer from './components/MyGuideViewer/MyGuideViewer';
+import 'react-toastify/dist/ReactToastify.css';
+import Recs from './components/Recomendations';
 
 export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkIfMobile();
-    window.addEventListener("resize", checkIfMobile);
-    return () => window.removeEventListener("resize", checkIfMobile);
-  }, []);
-
+  
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
     setIsAuthenticated(!!accessToken);
@@ -68,9 +63,8 @@ export default function App() {
           <Route path="/" element={
             <>
               <div style={{backgroundColor:"#FDF6e3"}}><SwiperBanner/></div>
-              {!isMobile && (
-                <div style={{backgroundColor:"#FDF6e3"}}><WorldMap/></div>
-              )}
+              <div style={{backgroundColor:"#FDF6e3"}}><WorldMap/></div>
+
             </>
           } />
            <Route path="/catalog" element={
@@ -84,15 +78,25 @@ export default function App() {
               <GuideViewer/>
             </ProtectedRoute>
             } />
+          <Route path="/catalog/my_guide/:id" element={
+            <ProtectedRoute>
+              <MyGuideViewer/>
+            </ProtectedRoute>
+            } />
           <Route path="/settings" element={
             <ProtectedRoute>
               <ProfileSettings/>
             </ProtectedRoute>
           } />
+          <Route path="/recommendations" element={
+            <ProtectedRoute>
+              <Recs/>
+            </ProtectedRoute>
+          } />
           
           <Route path="/profile" element={
             <ProtectedRoute>
-              {/* <GuideViewer/> */}
+              <ProfilePage/>
             </ProtectedRoute>
           } />
           

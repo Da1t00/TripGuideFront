@@ -6,7 +6,7 @@ export default function GuideBannerSlide(props) {
     <div className="GuideBannerDiv">
       <div
         style={{
-          backgroundImage: `url(${props.bgImage})`,
+          backgroundImage: `url(http://localhost:8000/guide/get_guide_logo/${props.bgImage})`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -20,7 +20,6 @@ export default function GuideBannerSlide(props) {
         }}
       />
       <GuideBanner
-        avatar={props.avatar}
         author={props.author}
         title={props.title}
         description={props.description}

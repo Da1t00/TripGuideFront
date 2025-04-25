@@ -96,8 +96,9 @@ export default function Header({ onSignInClick, isAuthenticated }) {
                     />
                     <Button 
                         class="button" 
-                        text="Search" 
-                        icon={<I.Search size={20} color="#FDF6E3" />} 
+                        text="Recommendations" 
+                        icon={<I.Flame size={20} color="#FDF6E3" />} 
+                        onClick={() => handleNavigation('/recommendations')}
                     />
                     <Button 
                         class="button" 
@@ -110,11 +111,7 @@ export default function Header({ onSignInClick, isAuthenticated }) {
                 <div className="profile">
                     {isAuthenticated ? (
                         <>
-                            <Button 
-                                class="Ibutton" 
-                                text="" 
-                                icon={<I.Bell size={24} color="#FDF6E3" />} 
-                            />
+                            
                             <Button 
                                 class="Ibutton" 
                                 text="" 
@@ -170,7 +167,7 @@ export default function Header({ onSignInClick, isAuthenticated }) {
                         <Button 
                             class="button" 
                             text={isMobile ? "Поиск" : "Search"}
-                            icon={<I.Search size={20} color="#FDF6E3" />} 
+                            icon={<I.Flame size={20} color="#FDF6E3" />} 
                             onClick={closeMobileMenu}
                         />
                         <Button 

@@ -1,4 +1,5 @@
 import React from 'react';
+import './ProfileSettings.css';
 import { User, Upload, Trash2 } from 'lucide-react';
 import axios from 'axios';
 
@@ -52,8 +53,8 @@ export default function ProfileImage({
 
   return (
     <>
-    <div className="profile-image-container">
-      <div className="profile-image">
+    <div className="profileset-image-container">
+      <div className="profileset-image">
         {profileImage ? (
           <img src={profileImage} alt="Profile" className="image" />
         ) : (

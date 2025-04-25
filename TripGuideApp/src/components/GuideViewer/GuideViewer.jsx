@@ -6,7 +6,7 @@ import Markdown from 'markdown-to-jsx';
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
 
-export default function GuideViewer() {
+export default function MyGuideViewer() {
   const { id } = useParams();
   const [guideData, setGuideData] = useState([]);
   const [liked, setLiked] = useState(guideData.liked_by_user);

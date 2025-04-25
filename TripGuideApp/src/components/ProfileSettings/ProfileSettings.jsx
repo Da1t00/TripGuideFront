@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ProfileSettings.css';
-import ProfileImage from './ProfileIMage'; // Assume this is in a separate file
+import ProfileImage from './ProfileIMage';// Assume this is in a separate file
 import ProfileUserInfo from './ProfileUserInfo'; // Import the new component
 
 export default function ProfileSettings() {
@@ -73,10 +73,10 @@ export default function ProfileSettings() {
   };
 
   return (
-    <div className="profile-container">
-      <div className="content-wrapper">
-        <div className="main-content">
-          <div className="profile-section">
+    <div className="profileset-container">
+      <div className="profileset-content-wrapper">
+        <div className="profileset-main-content">
+          <div className="profileset-section">
             <ProfileImage 
               profileImage={profileImage}
               setProfileImage={setProfileImage}

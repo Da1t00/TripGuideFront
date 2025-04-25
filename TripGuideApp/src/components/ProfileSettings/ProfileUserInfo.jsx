@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './ProfileSettings.css';
 function ProfileUserInfo({ 
   userData, 
   isEditing, 
@@ -16,7 +16,7 @@ function ProfileUserInfo({
         <h3 className="section-title">Info about user</h3>
         <div className="section-actions">
           <button
-            className={`edit-button ${isEditing ? 'save-button' : ''}`}
+            className={`set-edit-button ${isEditing ? 'save-button' : ''}`}
             onClick={toggleEditMode}
             disabled={isLoading}
           >

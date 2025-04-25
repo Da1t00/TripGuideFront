@@ -1,18 +1,19 @@
-.profile-container {
+.profileset-container {
   background-color: #FDF6E3;
   min-height: calc(100vh - 80px);
   width: 100%;
 }
 
-.content-wrapper {
+.profileset-content-wrapper {
   display: flex;
   max-width: 1200px;
+  
   margin: 0 auto;
   padding: 20px;
   gap: 20px;
 }
 
-.main-content {
+.profileset-main-content {
   flex: 1;
   background-color: #fff;
   border-radius: 8px;
@@ -20,20 +21,20 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.profile-section {
+.profileset-section {
   display: flex;
   align-items: center;
   margin-bottom: 30px;
   flex-wrap: wrap;
 }
 
-.profile-image-container {
+.profileset-image-container {
   position: relative;
   margin-right: 20px;
   margin-bottom: 10px;
 }
 
-.profile-image {
+.profileset-image {
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -119,7 +120,7 @@
   color: #333;
 }
 
-.edit-button {
+.set-edit-button {
   background-color: #3498db;
   color: white;
   border: none;
@@ -222,7 +223,7 @@
 }
 
 /* Адаптивность для мобильных устройств */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .content-wrapper {
     flex-direction: column;
     padding: 10px;
@@ -242,4 +243,4 @@
   .main-content {
     padding: 15px;
   }
-}
+} */

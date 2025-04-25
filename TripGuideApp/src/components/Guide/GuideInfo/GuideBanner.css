@@ -48,18 +48,26 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 660px;
+  max-width: 660px;
 }
 
 .title {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .description {
   font-size: 14px;
   margin-bottom: 15px;
   line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .date {
@@ -87,7 +95,7 @@
 }
 
 /* Media queries for responsive design */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .banner {
     flex-direction: column;
     align-items: center;
@@ -140,4 +148,4 @@
   .GuideBannerDiv {
     min-height: 75vh;
   }
-}
+} */

@@ -1,11 +1,28 @@
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography, Graticule } from "react-simple-maps";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // Предполагается, что вы используете react-toastify для уведомлений
+import axios from "axios";
+import { useEffect } from "react";
 
 const geoUrl = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
 
 const WorldMap = () => {
+  const navigate = useNavigate();
   const [tooltipContent, setTooltipContent] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [tags, setTags] = useState('');
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/guide/tags')
+      .then(response => {
+        setTags(response.data.tags);
+        }
+    )
+      .catch(error => {
+        console.error('Ошибка при получении каталога:', error);
+      });
+    },[]);
 
   const handleMouseEnter = (geo) => {
     const { name } = geo.properties;
@@ -22,7 +39,26 @@ const WorldMap = () => {
 
   const handleCountryClick = (geo) => {
     const countryName = geo.properties.name;
-    console.log("Нажата страна:", countryName);
+    
+    // Проверяем, есть ли гиды для этой страны
+    if (tags.includes(countryName)) {
+      // Переходим на страницу каталога с параметром для фильтра
+      navigate(`/catalog`, { 
+        state: { 
+          selectedCountry: countryName 
+        } 
+      });
+    } else {
+      // Показываем уведомление, что гидов по этой стране пока нет
+      toast.info(`Гидов по стране ${countryName} пока нет`, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true
+      });
+    }
   };
 
   return (
@@ -92,34 +128,39 @@ const WorldMap = () => {
           
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
-              geographies.filter((geo) => geo.properties.name !== "Antarctica").map((geo) => (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  onMouseEnter={() => handleMouseEnter(geo)}
-                  onMouseLeave={handleMouseLeave}
-                  onClick={() => handleCountryClick(geo)}
-                  style={{
-                    default: {
-                      fill: "#FDF6e3",
-                      stroke: "#708090",
-                      strokeWidth: 1,
-                      outline: "none",
-                    },
-                    hover: {
-                      fill: "#CD853F",
-                      stroke: "#CD853F",
-                      strokeWidth: 1.4, 
-                      outline: "none",
-                      cursor: "pointer",
-                    },
-                    pressed: {
-                      fill: "#d84315",
-                      outline: "none",
-                    },
-                  }}
-                />
-              ))
+              geographies.filter((geo) => geo.properties.name !== "Antarctica").map((geo) => {
+                const countryName = geo.properties.name;
+                const hasGuides = tags.includes(countryName);
+                
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    onMouseEnter={() => handleMouseEnter(geo)}
+                    onMouseLeave={handleMouseLeave}
+                    onClick={() => handleCountryClick(geo)}
+                    style={{
+                      default: {
+                        fill: hasGuides ? "#FDF6e3" : "#e0e0e0",
+                        stroke: "#708090",
+                        strokeWidth: 1,
+                        outline: "none",
+                      },
+                      hover: {
+                        fill: hasGuides ? "#CD853F" : "#bdbdbd",
+                        stroke: hasGuides ? "#CD853F" : "#9e9e9e",
+                        strokeWidth: 1.4, 
+                        outline: "none",
+                        cursor: "pointer",
+                      },
+                      pressed: {
+                        fill: hasGuides ? "#d84315" : "#9e9e9e",
+                        outline: "none",
+                      },
+                    }}
+                  />
+                );
+              })
             }
           </Geographies>
         </ComposableMap>
