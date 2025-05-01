@@ -19,7 +19,6 @@ export default function EditGuide({ isOpen, onClose, guide, id}) {
   const [description, setDescription] = useState('');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Reset form when modal is opened
   useEffect(() => {
     if (isOpen) {
       setDescription(guide.description);
@@ -29,7 +28,6 @@ export default function EditGuide({ isOpen, onClose, guide, id}) {
   }, [isOpen, guide]);
   
 
-  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -43,7 +41,6 @@ export default function EditGuide({ isOpen, onClose, guide, id}) {
     setContent(text);
   };
 
-  // Function to upload image to your API endpoint using axios
   const uploadImageToServer = async (file) => {
     try {
       const formData = new FormData();
@@ -57,24 +54,20 @@ export default function EditGuide({ isOpen, onClose, guide, id}) {
       
       return response.data.image_url;
     } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image. Please try again.');
+      console.error(error);
       return null;
     }
   };
   
-  // Handle image upload in the markdown editor
   const handleImageUpload = async (file) => {
     try {
-      // Upload the file to your server
       const imageUrl = await uploadImageToServer(file);
       
       if (imageUrl) {
-        // Return the URL to be inserted into the editor
         return imageUrl;
       }
       
-      // If upload fails, you can still use file reader as fallback for preview
+
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = () => {
@@ -83,7 +76,7 @@ export default function EditGuide({ isOpen, onClose, guide, id}) {
         reader.readAsDataURL(file);
       });
     } catch (error) {
-      console.error('Error in image upload:', error);
+      console.error(error);
       return null;
     }
   };
@@ -106,10 +99,10 @@ export default function EditGuide({ isOpen, onClose, guide, id}) {
           Authorization: `Bearer ${accessToken}`
         }
       });
-      alert('Guide edit successfully!');
+
     } catch (error) {
-      console.error('Error edit guide:', error.response?.data || error.message);
-      alert('Error edit guide!');
+      console.error( error.response?.data || error.message);
+
     }
   };
   
@@ -117,7 +110,6 @@ export default function EditGuide({ isOpen, onClose, guide, id}) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim() || !description.trim()) {
-      alert('Please fill out all fields');
       return;
     }
     handleSaveContent();
@@ -176,7 +168,6 @@ export default function EditGuide({ isOpen, onClose, guide, id}) {
               plugins={[
                 'header',
                 'font-bold',
-                'font-underline',
                 'font-strikethrough',
                 'block-wrap',
                 'link',

@@ -26,37 +26,31 @@ export default function CatalogPage() {
         setGuides(response.data.guides);
         setTags(response.data.tags);
         
-        // Если есть выбранная страна из карты, установим ее в фильтр
         if (location.state && location.state.selectedCountry) {
           const country = location.state.selectedCountry;
           
-          // Проверяем, есть ли данная страна в списке тегов
           if (response.data.tags.includes(country)) {
             setSelectedTags(prevTags => {
-              // Добавляем страну только если она еще не выбрана
               if (!prevTags.includes(country)) {
                 return [...prevTags, country];
               }
               return prevTags;
             });
           } else {
-            // Если страны нет в тегах, показываем уведомление
             toast.info(`Гидов по стране ${country} пока нет`, {
               position: "top-center",
               autoClose: 3000
             });
           }
           
-          // Очищаем состояние, чтобы при обновлении страницы не устанавливалось повторно
           navigate(location.pathname, { replace: true });
         }
       })
       .catch(error => {
-        console.error('Ошибка при получении каталога:', error);
+        console.error( error);
       });
   }, [location.state, navigate, location.pathname]);
 
-  // Загрузка списка стран для фильтра
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -64,17 +58,15 @@ export default function CatalogPage() {
         const data = await res.json();
         const countryNames = data.features.map(d => d.properties.name);
   
-        // Сортировка
         countryNames.sort((a, b) => a.localeCompare(b));
         setCountries(countryNames);
       } catch (error) {
-        console.error("Ошибка при загрузке стран:", error);
+        console.error(error);
       }
     };
     fetchCountries();
   }, []);
 
-  // Обработчик изменения состояния чекбоксов
   const handleTagChange = (tag) => {
     setSelectedTags(prevSelectedTags => {
       if (prevSelectedTags.includes(tag)) {
@@ -85,14 +77,11 @@ export default function CatalogPage() {
     });
   };
 
-  // Переключение видимости мобильного фильтра
   const toggleMobileFilter = () => {
     setMobileFilterVisible(!mobileFilterVisible);
   };
 
-  // Фильтрация гидов по тексту и выбранным тегам
   const filteredGuides = guides.filter(guide => {
-    // Фильтрация по тексту
     const textMatch = guide.title.toLowerCase().includes(filterText.toLowerCase()) || 
                       guide.description.toLowerCase().includes(filterText.toLowerCase());
     
@@ -100,7 +89,6 @@ export default function CatalogPage() {
       return textMatch;
     }
     
-    // Фильтрация по тегам
     const tagMatch = selectedTags.every(tag => 
       Array.isArray(guide.guide_tags) && guide.guide_tags.includes(tag)
     );
@@ -114,11 +102,9 @@ export default function CatalogPage() {
       <ToastContainer />
       
       <div className="catalog-container">
-        {/* Main content area */}
         <div className="catalog-main-content">
           <h1 className="page-title">Catalog</h1>
           
-          {/* Guides grid */}
           {filteredGuides.length > 0 ? (
             <div className="guides-grid">
               {filteredGuides.map(guide => (
@@ -154,7 +140,6 @@ export default function CatalogPage() {
           )}
         </div>
         
-        {/* Filter sidebar */}
         <div className={`filter-sidebar ${mobileFilterVisible ? 'mobile-visible' : ''}`}>
           <h2 className="filter-title">Filters</h2>
           <div className="menuDivider"/>
@@ -170,7 +155,6 @@ export default function CatalogPage() {
             />
           </div>
           
-          {/* Categories filter */}
           <div className="filter-group">
             <div className="menuDivider"/>
             <h3 className="filter-subtitle">Type of guide</h3>
@@ -215,14 +199,12 @@ export default function CatalogPage() {
             </div>
           </div>
           
-          {/* Mobile filter close button */}
           <div className="mobile-filter-close" onClick={toggleMobileFilter}>
             Close Filters
           </div>
         </div>
       </div>
 
-      {/* Mobile filter toggle button */}
       <div className="mobile-filter-button" onClick={toggleMobileFilter}>
         Filters
       </div>

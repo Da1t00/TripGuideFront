@@ -11,7 +11,7 @@ export default function Authorize({ onClose }) {
     email: "",
     password: "",
     verification_code: "",
-    login: "" // New field for combined email/nickname login
+    login: "" 
   });
   const [errors, setErrors] = useState({
     nickname: "",
@@ -19,25 +19,24 @@ export default function Authorize({ onClose }) {
     password: "",
     verification_code: "",
     login: "",
-    server: "" // For server-side errors
+    server: "" 
   });
   const [isVerifying, setIsVerifying] = useState(false);
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("info"); // "info", "success", "error"
+  const [messageType, setMessageType] = useState("info"); 
   const [showVerificationSuccess, setShowVerificationSuccess] = useState(false);
 
-  // Check for pending verification on component mount
   useEffect(() => {
     const pendingVerification = localStorage.getItem('pendingVerification');
     if (pendingVerification) {
       try {
         const verificationData = JSON.parse(pendingVerification);
         if (verificationData && verificationData.email && verificationData.nickname) {
-          // Set verification mode automatically
+
           setActiveTab("register");
           setIsVerifying(true);
           
-          // Populate form with stored data
+
           setFormData(prev => ({
             ...prev,
             email: verificationData.email,
@@ -46,7 +45,7 @@ export default function Authorize({ onClose }) {
           }));
         }
       } catch (error) {
-        console.error("Error parsing pending verification data:", error);
+        console.error(error);
         localStorage.removeItem('pendingVerification');
       }
     }
@@ -58,7 +57,7 @@ export default function Authorize({ onClose }) {
       const accessToken = localStorage.getItem('accessToken');
       
       if (!accessToken) {
-        console.error("No access token found");
+
         return;
       }
       
@@ -81,7 +80,6 @@ export default function Authorize({ onClose }) {
       
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        // Если токен недействителен или истек
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         setErrorMessage("Session expired. Please login again.");
@@ -98,17 +96,14 @@ export default function Authorize({ onClose }) {
       [name]: value
     }));
     
-    // Clear error when user starts typing again
     setErrors(prev => ({
       ...prev,
       [name]: ""
     }));
     
-    // Also clear any error messages when user makes changes
     setMessage("");
   };
 
-  // Save verification details to localStorage
   const savePendingVerification = (email, nickname) => {
     const verificationData = {
       email,
@@ -118,12 +113,10 @@ export default function Authorize({ onClose }) {
     localStorage.setItem('pendingVerification', JSON.stringify(verificationData));
   };
 
-  // Clear verification details from localStorage
   const clearPendingVerification = () => {
     localStorage.removeItem('pendingVerification');
   };
 
-  // Detect if login input is email or nickname
   const isEmail = (text) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(text);
@@ -140,14 +133,12 @@ export default function Authorize({ onClose }) {
       server: ""
     };
 
-    // Login field validation (for login tab)
     if (activeTab === "login") {
       if (!formData.login) {
         newErrors.login = "Email or nickname is required";
         isValid = false;
       }
     } else {
-      // Email validation (for registration tab)
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!formData.email) {
         newErrors.email = "Email is required";
@@ -157,7 +148,6 @@ export default function Authorize({ onClose }) {
         isValid = false;
       }
       
-      // Nickname validation (for registration tab)
       if (!isVerifying) {
         if (!formData.nickname) {
           newErrors.nickname = "Nickname is required";
@@ -169,7 +159,6 @@ export default function Authorize({ onClose }) {
       }
     }
 
-    // Password validation (only for login and register)
     if (!isVerifying) {
       const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
       if (!formData.password) {
@@ -181,7 +170,6 @@ export default function Authorize({ onClose }) {
       }
     }
 
-    // Verification code validation
     if (isVerifying) {
       if (!formData.verification_code) {
         newErrors.verification_code = "Verification code is required";
@@ -219,7 +207,6 @@ export default function Authorize({ onClose }) {
             password: formData.password
           };
 
-          // Set either email or nickname based on input format
           if (isEmail(loginField)) {
             loginData.email = loginField;
             loginData.nickname = '';
@@ -228,60 +215,48 @@ export default function Authorize({ onClose }) {
             loginData.email = '';
           }
 
-          // Handle login
           const response = await axios.post('http://localhost:8000/auth/login', loginData);
           
-          // Store tokens in localStorage or a secure storage
           localStorage.setItem('accessToken', response.data.access_token);
           localStorage.setItem('refreshToken', response.data.refresh_token);
           
-          // Clear any pending verification data
           clearPendingVerification();
           
-          // Получаем данные пользователя сразу после успешной авторизации
           await fetchUserData();
           
           setSuccessMessage("Login successful!");
-          // Close modal or redirect after successful login
           setTimeout(() => onClose(), 1000);
           
         } else if (activeTab === "register" && !isVerifying) {
-          // Handle registration
           await axios.post('http://localhost:8000/auth/register', {
             email: formData.email,
             nickname: formData.nickname,
             password: formData.password
           });
           
-          // Save verification details to localStorage
           savePendingVerification(formData.email, formData.nickname);
           
           setIsVerifying(true);
           
         } else if (isVerifying) {
-          // Handle verification
           await axios.post('http://localhost:8000/auth/verify', {
             email: formData.email,
             nickname: formData.nickname,
             verification_code: formData.verification_code
           });
           
-          // Clear pending verification data from localStorage
           clearPendingVerification();
           
-          // Show verification success notification
           setSuccessMessage("Account verified successfully! You can now log in.");
           setShowVerificationSuccess(true);
           
-          // Wait for 2 seconds before switching to login tab
           setTimeout(() => {
             setIsVerifying(false);
             setActiveTab("login");
             
-            // Reset form for login
             setFormData(prev => ({
               ...prev,
-              login: formData.email, // Pre-fill login with email for convenience
+              login: formData.email, 
               password: "",
               verification_code: ""
             }));
@@ -319,7 +294,6 @@ export default function Authorize({ onClose }) {
   };
 
   const handleTabChange = (tab) => {
-    // Only allow tab change if not in verification mode
     if (!isVerifying) {
       setActiveTab(tab);
       setMessage("");
@@ -371,7 +345,6 @@ export default function Authorize({ onClose }) {
           </button>
         </div>
 
-        {/* Verification success notification with enhanced styling */}
         {showVerificationSuccess && (
           <div className="verification-success">
             <I.CheckCircle size={24} color="#4CAF50" />
@@ -379,11 +352,9 @@ export default function Authorize({ onClose }) {
           </div>
         )}
 
-        {/* All server errors will be displayed here */}
         {message && <div className={`message ${messageType}`}>{message}</div>}
 
         <form className="form" onSubmit={handleSubmit}>
-          {/* Login form */}
           {activeTab === "login" && !isVerifying && (
             <>
               <div className="form-group">
@@ -423,7 +394,6 @@ export default function Authorize({ onClose }) {
             </>
           )}
 
-          {/* Registration form */}
           {activeTab === "register" && !isVerifying && (
             <>
               <div className="form-group">
@@ -477,7 +447,6 @@ export default function Authorize({ onClose }) {
             </>
           )}
 
-          {/* Verification form */}
           {isVerifying && (
             <>
               <div className="verification-info">

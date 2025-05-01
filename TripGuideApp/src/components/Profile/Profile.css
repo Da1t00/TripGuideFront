@@ -31,7 +31,6 @@
     min-height: 900px;
   }
   
-  /* Tab buttons styling */
   .tab-buttons {
     display: flex;
     margin-bottom: 40px;
@@ -154,7 +153,6 @@
     color: #666;
   }
   
-  /* Empty state */
   .empty-state {
     background-color: white;
     border-radius: 8px;
@@ -171,7 +169,6 @@
     margin: 0;
   }
   
-  /* Responsive styles */
   @media (max-width: 1440px) {
     .profile-container {
       margin-inline: 100px;

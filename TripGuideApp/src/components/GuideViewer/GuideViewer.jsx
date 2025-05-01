@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import * as I from 'lucide-react';
 import './GuideViewer.css';
-// Import a markdown parser library (you would need to install this)
 import Markdown from 'markdown-to-jsx';
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
@@ -32,8 +31,7 @@ export default function MyGuideViewer() {
     try {
       await likeGuide(id);
     } catch (error) {
-      console.error('Ошибка при лайке:', error);
-      // Revert state if API call fails
+      console.error(error);
       setLiked(liked);
       setLikeCount(liked ? likeCount : likeCount - 1);
     }
@@ -41,10 +39,8 @@ export default function MyGuideViewer() {
 
   const handleCommentLikeClick = (commentId) => async () => {
     try {
-      // Find the comment to update
       const updatedComments = comments.map(comment => {
         if (comment.id === commentId) {
-          // Toggle like status and count
           const newLikedStatus = !comment.liked_by_user;
           const newLikeCount = newLikedStatus 
             ? (comment.like_count || 0) + 1 
@@ -56,7 +52,6 @@ export default function MyGuideViewer() {
             like_count: newLikeCount >= 0 ? newLikeCount : 0
           };
         } else if (comment.replies) {
-          // Check for the comment in replies
           const updatedReplies = comment.replies.map(reply => {
             if (reply.id === commentId) {
               const newLikedStatus = !reply.liked_by_user;
@@ -82,20 +77,16 @@ export default function MyGuideViewer() {
         return comment;
       });
       
-      // Update state immediately for responsive UI
       setComments(updatedComments);
       
-      // Make API call to update like status on the server
       await likeComment(commentId);
       
     } catch (error) {
-      console.error('Ошибка при лайке комментария:', error);
-      // Revert to original comments if API call fails
-      // You could implement this by keeping a copy of the original comments before updating
+      console.error( error);
+      
     }
   };
 
-  // API call to like a comment
   const likeComment = async (commentId) => {
     try {
       const response = await axios.post(
@@ -108,10 +99,9 @@ export default function MyGuideViewer() {
         }
       );
       
-      console.log('Ответ при лайке комментария:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Ошибка при отправке лайка комментария:', error);
+      console.error(error);
       throw error;
     }
   };
@@ -125,14 +115,13 @@ export default function MyGuideViewer() {
       }
      )
       .then(response => {
-        console.log('Ответ от сервера:', response.data);
+        console.log(response.data);
         setGuideData(response.data.guide);
         setLiked(response.data.guide.liked_by_user);
-        setComments(response.data.discussion || []); // Убедитесь, что комментарии приходят в правильном формате
+        setComments(response.data.discussion || []); 
       })  
       .catch(error => {
-        console.log('Ответ от сервера:', error.response?.data);
-        console.error('Ошибка при получении каталога:', error);
+        console.error(error);
       });
   }, [id, accessToken]); 
 
@@ -140,16 +129,14 @@ export default function MyGuideViewer() {
     if (!newComment.trim()) return;
 
     try {
-      // Prepare the comment data
       const commentData = {
         guide_id: id,
         text: newComment,
         parent_id: replyTo
       };
       
-      // Create new comment object for immediate UI update
       const tempNewComment = {
-        id: Date.now(), // Temporary ID, server will assign the real one
+        id: Date.now(), 
         author: userData.nickname,
         text: newComment,
         created_at: new Date().toISOString(),
@@ -159,10 +146,8 @@ export default function MyGuideViewer() {
         liked_by_user: false
       };
       
-      // Update UI immediately for better UX
       console.log(tempNewComment)
       if (replyTo) {
-        // Add reply to existing comment
         setComments(comments.map(comment => {
           if (comment.id === replyTo) {
             return {
@@ -173,15 +158,12 @@ export default function MyGuideViewer() {
           return comment;
         }));
       } else {
-        // Add new top-level comment
         setComments([...comments, tempNewComment]);
       }
       
-      // Reset form
       setNewComment('');
       setReplyTo(null);
-      console.log('Новый комментарий:', commentData);
-      // Make API call to save comment on server
+      console.log(commentData);
       const response = await axios.post(
         `http://localhost:8000/comments/add`,
         commentData,
@@ -192,14 +174,13 @@ export default function MyGuideViewer() {
         }
       );
       
-      console.log('Комментарий успешно добавлен:', response.data, tempNewComment);
+      console.log(response.data, tempNewComment);
       
-      // If needed, update the comment with server-generated ID and other data
-      // This would require fetching the updated comments list or handling the server response
+
       
     } catch (error) {
-      console.error('Ошибка при добавлении комментария:', error);
-      // You could show an error message here and revert the UI changes
+      console.error( error);
+
     }
   };
 
@@ -232,10 +213,9 @@ export default function MyGuideViewer() {
         }
       );
   
-      console.log('Ответ от сервера:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Ошибка при отправке лайка:', error);
+      console.error( error);
       throw error;
     }
   };
@@ -250,7 +230,7 @@ export default function MyGuideViewer() {
   
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
-      console.error('Invalid date string passed to formatDate:', dateString);
+      console.error(dateString);
       return 'Invalid date';
     }
   
@@ -269,7 +249,7 @@ export default function MyGuideViewer() {
   const formatTime = (dateString) => {
     const date = new Date(dateString);
     date.setHours(date.getHours());
-    return date.toLocaleString('ru-RU', {
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -327,7 +307,7 @@ export default function MyGuideViewer() {
               <button 
                 className={`like-button ${liked ? 'liked' : ''}`}
                 onClick={handleLikeClick}
-                aria-label={liked ? "Убрать лайк" : "Поставить лайк"}
+                aria-label={liked ? "Delete like" : "Set like"}
               >
                 {liked ? <I.Heart fill="red" color="red" /> : <I.Heart />}
                 <span className="like-count">{likeCount}</span>
@@ -336,7 +316,7 @@ export default function MyGuideViewer() {
           </div>
         </div>
 
-        {/* Вкладки */}
+
         <div className="guide-tabs">
           <button 
             className={`tab-button ${activeTab === 'content' ? 'active' : ''}`}
@@ -368,13 +348,13 @@ export default function MyGuideViewer() {
           </div>
         ) : (
           <div className="discussions-container">
-            <h2 className="discussions-title">Комментарии</h2>
+            <h2 className="discussions-title">Comments</h2>
             
-            {/* Форма для добавления комментария */}
+
             <div className="comment-form">
               {replyTo && (
                 <div className="reply-indicator">
-                  <span>Ответ на комментарий #{replyTo}</span>
+                  <span>Reply to comment #{replyTo}</span>
                   <button className="cancel-reply-button" onClick={cancelReply}>
                     <I.X size={16} />
                   </button>
@@ -383,16 +363,16 @@ export default function MyGuideViewer() {
               <textarea
                 ref={commentInputRef}
                 className="comment-input"
-                placeholder={replyTo ? "Напишите ваш ответ..." : "Напишите ваш комментарий..."}
+                placeholder={replyTo ? "Write your reply..." : "Write your comment..."}
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
               ></textarea>
               <button className="submit-comment-button" onClick={handleAddComment}>
-                {replyTo ? "Ответить" : "Комментировать"}
+                {replyTo ? "Reply" : "Commenting"}
               </button>
             </div>
             
-            {/* Список комментариев */}
+
             <div className="comments-list">
               {comments.length > 0 ? (
                 comments.map(comment => (
@@ -409,12 +389,12 @@ export default function MyGuideViewer() {
                         <div className="comment-text">{comment.text}</div>
                         <div style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
                           <button className="reply-button" onClick={() => handleReply(comment.id)}>
-                            <I.Reply size={16} /> Ответить
+                            <I.Reply size={16} /> Reply
                           </button>
                           <button 
                             className={`com-like-button ${comment.liked_by_user ? 'liked' : ''}`}
                             onClick={handleCommentLikeClick(comment.id)}
-                            aria-label={comment.liked_by_user ? "Убрать лайк" : "Поставить лайк"}
+                            aria-label={comment.liked_by_user ? "Delete like" : "Set like"}
                           >
                             {comment.liked_by_user ? <I.Heart fill="red" color="red" /> : <I.Heart />}
                             <span className="like-count">{comment.like_count || 0}</span>
@@ -423,7 +403,7 @@ export default function MyGuideViewer() {
                       </div>
                     </div>
                     
-                    {/* Ответы на комментарий */}
+
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="comment-replies">
                         {comment.replies.map(reply => (
@@ -441,7 +421,7 @@ export default function MyGuideViewer() {
                                 <button 
                                   className={`com-like-button ${reply.liked_by_user ? 'liked' : ''}`}
                                   onClick={handleCommentLikeClick(reply.id)}
-                                  aria-label={reply.liked_by_user ? "Убрать лайк" : "Поставить лайк"}
+                                  aria-label={reply.liked_by_user ? "Delete like" : "Set like"}
                                 >
                                   {reply.liked_by_user ? <I.Heart fill="red" color="red" /> : <I.Heart />}
                                   <span className="like-count">{reply.like_count || 0}</span>
@@ -456,7 +436,7 @@ export default function MyGuideViewer() {
                 ))
               ) : (
                 <div className="no-comments">
-                  <p>Пока нет комментариев. Будьте первым!</p>
+                  <p>No comments yet. Be the first!</p>
                 </div>
               )}
             </div>

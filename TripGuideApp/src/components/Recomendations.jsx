@@ -7,7 +7,7 @@ export default function Recs() {
   const [guides, setGuides] = useState([]);
   const accessToken = localStorage.getItem('accessToken');
   
-  // Получение данных с сервера
+
   useEffect(() => {
     axios.get('http://localhost:8000/recs', {
       headers: {
@@ -16,10 +16,9 @@ export default function Recs() {
     })
     .then(response => {
       setGuides(response.data.recommendations);
-      console.log(response.data.recommendations);
     })
     .catch(error => {
-      console.error('Ошибка при получении recs:', error);
+      console.error( error);
     });
   }, [accessToken]);
 
@@ -32,13 +31,8 @@ export default function Recs() {
   return (
     <div className="profile-page-container">
       <div className="profile-container">
-        {/* Main content area */}
         <div className="main-content">
           <h1 className="profile-title">Recommendations</h1>
-          
-         
-          
-          {/* Guides grid */}
           {guides.length > 0 ? (
             <div className="guides-grid">
               {guides.map(guide => (

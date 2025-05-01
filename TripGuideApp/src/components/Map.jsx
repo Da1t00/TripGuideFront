@@ -20,7 +20,7 @@ const WorldMap = () => {
         }
     )
       .catch(error => {
-        console.error('Ошибка при получении каталога:', error);
+        console.error( error);
       });
     },[]);
 
@@ -40,16 +40,13 @@ const WorldMap = () => {
   const handleCountryClick = (geo) => {
     const countryName = geo.properties.name;
     
-    // Проверяем, есть ли гиды для этой страны
     if (tags.includes(countryName)) {
-      // Переходим на страницу каталога с параметром для фильтра
       navigate(`/catalog`, { 
         state: { 
           selectedCountry: countryName 
         } 
       });
     } else {
-      // Показываем уведомление, что гидов по этой стране пока нет
       toast.info(`Гидов по стране ${countryName} пока нет`, {
         position: "top-center",
         autoClose: 3000,
@@ -66,7 +63,6 @@ const WorldMap = () => {
       style={{ position: "relative", textAlign: "center" }}
       onMouseMove={handleMouseMove}
     >
-      {/* Всплывающая подсказка */}
       {tooltipContent && (
         <div
           style={{
@@ -93,23 +89,23 @@ const WorldMap = () => {
           width: "100%", 
           maxWidth: "1200px", 
           margin: "0 auto",
-          backgroundColor: "#708090", // Light blue background like water
+          backgroundColor: "#708090", 
           borderRadius: "12px",
           padding: "20px",
           boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
         }}
       >
         <ComposableMap
-          projection="geoEqualEarth" // Changed to a more globe-like projection
+          projection="geoEqualEarth" 
           projectionConfig={{
             scale: 180,
             center: [0, 0]
           }}
         >
-          {/* Add a graticule (grid lines) to represent longitude/latitude lines */}
+  
           <Graticule stroke="#DDD" strokeWidth={0.5} />
           
-          {/* Add an "outline" for the globe */}
+
           <Geography
             geography={{
               type: "Feature",

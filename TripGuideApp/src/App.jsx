@@ -48,7 +48,6 @@ export default function App() {
     setIsAuthenticated(!!accessToken);
   };
 
-  // Компонент для защищенных маршрутов
   const ProtectedRoute = ({ children }) => {
     if (!isAuthenticated) {
       return <Navigate to="/" replace />;

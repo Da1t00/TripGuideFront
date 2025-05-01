@@ -14,7 +14,6 @@ export default function Header({ onSignInClick, isAuthenticated }) {
     const [editorModalOpen, setEditorModalOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     
-    // Handle window resize
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 768);
@@ -64,7 +63,6 @@ export default function Header({ onSignInClick, isAuthenticated }) {
     
 
     
-    // Close menus when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (profileOpen && !event.target.closest('.profile') && 

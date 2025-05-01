@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ProfileSettings.css';
-import ProfileImage from './ProfileIMage';// Assume this is in a separate file
+import ProfileImage from './ProfileImage';
 import ProfileUserInfo from './ProfileUserInfo'; // Import the new component
 
 export default function ProfileSettings() {
@@ -45,7 +45,7 @@ export default function ProfileSettings() {
 
       return true;
     } catch (error) {
-      console.error('Error updating user info:', error);
+      console.error( error);
       return false;
     } finally {
       setIsLoading(false);

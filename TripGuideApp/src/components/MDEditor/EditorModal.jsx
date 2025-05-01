@@ -24,7 +24,6 @@ export default function EditorModal({ isOpen, onClose}) {
   const [isDisabled, setIsDisabled] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Reset form when modal is opened
   useEffect(() => {
     if (isOpen) {
       setLogoFile('');
@@ -39,7 +38,6 @@ export default function EditorModal({ isOpen, onClose}) {
   }, [isOpen]);
   
 
-  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -53,7 +51,6 @@ export default function EditorModal({ isOpen, onClose}) {
     setContent(text);
   };
 
-  // Function to upload image to your API endpoint using axios
   const uploadImageToServer = async (file) => {
     try {
       const formData = new FormData();
@@ -67,24 +64,19 @@ export default function EditorModal({ isOpen, onClose}) {
       
       return response.data.image_url;
     } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image. Please try again.');
+      console.error( error);
       return null;
     }
   };
   
-  // Handle image upload in the markdown editor
   const handleImageUpload = async (file) => {
     try {
-      // Upload the file to your server
       const imageUrl = await uploadImageToServer(file);
       
       if (imageUrl) {
-        // Return the URL to be inserted into the editor
         return imageUrl;
       }
       
-      // If upload fails, you can still use file reader as fallback for preview
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = () => {
@@ -93,12 +85,11 @@ export default function EditorModal({ isOpen, onClose}) {
         reader.readAsDataURL(file);
       });
     } catch (error) {
-      console.error('Error in image upload:', error);
+      console.error( error);
       return null;
     }
   };
 
-  // Keep original logo handling
   const handleLogoChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -130,10 +121,9 @@ export default function EditorModal({ isOpen, onClose}) {
           Authorization: `Bearer ${accessToken}`
         }
       });
-      alert('Guide saved successfully!');
     } catch (error) {
-      console.error('Error saving guide:', error.response?.data || error.message);
-      alert('Error saving guide!');
+      console.error( error.response?.data || error.message);
+
     }
   };
   
@@ -141,7 +131,7 @@ export default function EditorModal({ isOpen, onClose}) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim() || !description.trim()) {
-      alert('Please fill out all fields');
+
       return;
     }
     handleSaveContent();
@@ -165,7 +155,7 @@ export default function EditorModal({ isOpen, onClose}) {
         countryNames.sort((a, b) => a.localeCompare(b));
         setCountries(countryNames);
       } catch (error) {
-        console.error("Ошибка при загрузке стран:", error);
+        console.error(error);
       }
     };
     fetchCountries();
@@ -249,7 +239,7 @@ export default function EditorModal({ isOpen, onClose}) {
             
             <label>Tags</label>
             <div className="tagInputContainer">
-              {/* Выбор типа */}
+
               <div className='tagInputGroup'>
                 <select
                   value={selectedType}
@@ -319,7 +309,6 @@ export default function EditorModal({ isOpen, onClose}) {
               plugins={[
                 'header',
                 'font-bold',
-                'font-underline',
                 'font-strikethrough',
                 'block-wrap',
                 'link',

@@ -222,8 +222,7 @@
   display: flex;
 }
 
-/* Адаптивность для мобильных устройств */
-/* @media (max-width: 768px) {
+@media (max-width: 768px) {
   .content-wrapper {
     flex-direction: column;
     padding: 10px;
@@ -243,4 +242,4 @@
   .main-content {
     padding: 15px;
   }
-} */
+}

@@ -1,7 +1,5 @@
-// Swiper.jsx
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -9,7 +7,6 @@ import 'swiper/css/pagination';
 
 import GuideBannerSlide from '../Guide/Guide'
 import './Swiper.css'
-// import required modules
 import { Navigation, Autoplay, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +15,7 @@ import axios from 'axios';
 
 export default function SwiperBanner() {
   const [slidesPerView, setSlidesPerView] = useState(1);
-  const [slidesData, setSlidesData] = useState([]); // ✅ правильно
+  const [slidesData, setSlidesData] = useState([]);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -40,10 +37,10 @@ export default function SwiperBanner() {
   useEffect(() => {
     axios.get('http://localhost:8000/popular')
       .then(response => {
-        setSlidesData(response.data.guides); // ✅ правильно
+        setSlidesData(response.data.guides);
       })
       .catch(error => {
-        console.error('Ошибка при получении популярных:', error);
+        console.error( error);
       });
   }, []);
 

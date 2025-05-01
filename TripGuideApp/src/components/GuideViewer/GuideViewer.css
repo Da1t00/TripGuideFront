@@ -29,7 +29,7 @@
 
 .guide-meta {
   flex: 1;
-  min-width: 0; /* Исправление для правильного flexbox */
+  min-width: 0; 
   margin-top: 10px;
   display: block;
   max-height: 210px;
@@ -188,7 +188,7 @@
   overflow: auto;
 }
 
-/* Стили для вкладок */
+
 .guide-tabs {
   display: flex;
   margin-bottom: 20px;
@@ -220,11 +220,11 @@
 
 
 
-/* Стили для дискуссий */
 .discussions-container {
   padding: 20px;
   border: 1px solid #eaeaea;
   border-radius: 8px;
+  min-height: 900px;
 }
 
 .discussions-title {
@@ -396,7 +396,7 @@
   font-style: italic;
 }
 
-/* Адаптивность для больших планшетов */
+
 @media (max-width: 992px) {
   .guide-header {
     gap: 24px;
@@ -415,7 +415,7 @@
   }
 }
 
-/* Адаптивность для малых планшетов */
+
 @media (max-width: 768px) {
   .guide-viewer {
     padding: 16px;

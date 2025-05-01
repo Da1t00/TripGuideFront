@@ -94,7 +94,6 @@
   background-color: #3D2813;
 }
 
-/* Media queries for responsive design */
 @media (max-width: 768px) {
   .banner {
     flex-direction: column;

@@ -24,11 +24,10 @@ export default function ProfileImage({
           Authorization: `Bearer ${accessToken}`
         }
       });
-      // Update image after upload
       const timestamp = new Date().getTime();
       setProfileImage(`http://localhost:8000/user/avatar/${userData.nickname}?t=${timestamp}`);
     } catch (error) {
-      console.error('Upload error:', error.response?.data || error.message);
+      console.error( error.response?.data || error.message);
     }
   };
 
@@ -37,17 +36,15 @@ export default function ProfileImage({
       const accessToken = localStorage.getItem('accessToken');
       if (!accessToken) return;
   
-      // Send DELETE request to server
       await axios.delete('http://localhost:8000/user/delete_avatar', {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
       });
   
-      setProfileImage(null); // remove image from UI
-      console.log('Avatar deleted successfully');
+      setProfileImage(null); 
     } catch (error) {
-      console.error('Error deleting avatar:', error.response?.data || error.message);
+      console.error(error.response?.data || error.message);
     }
   };
 

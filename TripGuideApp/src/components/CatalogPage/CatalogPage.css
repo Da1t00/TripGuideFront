@@ -1,6 +1,4 @@
-/* CatalogPage.css */
 
-/* Main layout */
 .catalog-page-container {
     background-color: #FDF6E3;
     min-height: 100vh;
@@ -44,7 +42,6 @@
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   }
   
-  /* Typography */
   .page-title {
     font-size: 24px;
     font-weight: bold;
@@ -58,7 +55,6 @@
     
   }
   
-  /* Guides grid */
   .guides-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -88,7 +84,6 @@
     transition: background-color 0.3s ease;
   }
   
-  /* Logo container and image styling - FIXED */
   .catalog-logo-container {
     width: 100%;
     height: 200px;
@@ -145,7 +140,6 @@
     margin-top: 8px;
     margin-bottom: 10px;
   }
-  /* Empty state */
   .empty-state {
     background-color: white;
     border-radius: 8px;
@@ -160,7 +154,6 @@
     margin: 0;
   }
   
-  /* Filter components */
   .filter-group {
     margin-bottom: 16px;
   }
@@ -200,7 +193,6 @@
   
     
   
-  /* Mobile filter toggle button */
   .mobile-filter-button {
     display: none;
     position: fixed;
@@ -226,7 +218,6 @@
     cursor: pointer;
   }
   
-  /* Responsive styles */
   @media (max-width: 1440px) {
     .catalog-container {
       margin-inline: 100px;

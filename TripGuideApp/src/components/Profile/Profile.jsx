@@ -10,7 +10,6 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('myGuides'); 
   const accessToken = localStorage.getItem('accessToken');
   
-  // Получение данных с сервера
   useEffect(() => {
     axios.get('http://localhost:8000/profile', {
       headers: {
@@ -26,15 +25,12 @@ export default function ProfilePage() {
     });
   }, [accessToken]);
 
-  // Function to handle tab switching
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
-  // Determine which guides to display based on active tab
   const displayedGuides = activeTab === 'myGuides' ? myGuides : likedGuides;
 
-  // Функция для перехода к нужному руководству
   const navigateToGuide = (guide) => {
     const path = activeTab === 'myGuides' 
       ? `/catalog/my_guide/${guide.id}` 
@@ -46,11 +42,9 @@ export default function ProfilePage() {
   return (
     <div className="profile-page-container">
       <div className="profile-container">
-        {/* Main content area */}
         <div className="main-content">
           <h1 className="profile-title">My Profile</h1>
           
-          {/* Tab buttons */}
           <div className="tab-buttons">
             <button 
               className={`tab-button ${activeTab === 'myGuides' ? 'active' : ''}`}
@@ -66,7 +60,6 @@ export default function ProfilePage() {
             </button>
           </div>
           
-          {/* Guides grid */}
           {displayedGuides.length > 0 ? (
             <div className="guides-grid">
               {displayedGuides.map(guide => (

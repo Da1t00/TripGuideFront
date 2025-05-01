@@ -32,7 +32,6 @@
   transform: scale(1.2);
 }
 
-/* Media queries for swiper container */
 @media (max-width: 768px) {
   .swiper {
     width: 95%;
@@ -42,14 +41,12 @@
     font-size: 20px;
   }
   
-  /* Hide navigation arrows on mobile */
   .swiper-button-next,
   .swiper-button-prev {
     display: none !important;
   }
 }
 
-/* Guide.css */
 .GuideBannerDiv {
   padding: 0;
   display: flex;

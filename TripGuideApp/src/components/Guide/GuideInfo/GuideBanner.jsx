@@ -13,7 +13,7 @@ export default function GuideBanner({ author, title, description, date, onButton
           <div className="title">{title}</div>
           <div className="description">{description}</div>
           <button className="arrow-button" onClick={onButtonClick}>
-            Читать →
+            View →
           </button>
         </div>
         <div className="date">{date}</div>
