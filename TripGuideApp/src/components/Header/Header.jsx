@@ -160,33 +160,27 @@ export default function Header({ onSignInClick, isAuthenticated }) {
                     <div className="mobileMenuContent">
                         <Button 
                             class="button" 
-                            text={isMobile ? "Главная" : "Home"}
+                            text={isMobile ? "Home" : "Home"}
                             icon={<I.Home size={20} color="#FDF6E3" />} 
                             onClick={() => handleNavigation('/')}
                         />
                         <Button 
                             class="button" 
-                            text={isMobile ? "Поиск" : "Search"}
+                            text={isMobile ? "Recommendations" : "Search"}
                             icon={<I.Flame size={20} color="#FDF6E3" />} 
-                            onClick={closeMobileMenu}
+                            onClick={() => handleNavigation('/recommendations')}
                         />
                         <Button 
                             class="button" 
-                            text={isMobile ? "Каталог" : "Catalog"}
+                            text={isMobile ? "Catalog" : "Catalog"}
                             icon={<I.Layers size={20} color="#FDF6E3" />} 
-                            onClick={closeMobileMenu}
+                            onClick={() => handleNavigation('/catalog')}
                         />
                         
                         <div className="menuDivider"></div>
                         
                         {isAuthenticated ? (
                             <>
-                                <Button 
-                                    class="button" 
-                                    text="Notifications" 
-                                    icon={<I.Bell size={20} color="#FDF6E3" />} 
-                                    onClick={closeMobileMenu}
-                                />
                                 <Button 
                                     class="button" 
                                     text="Create" 

@@ -188,8 +188,205 @@
   overflow: auto;
 }
 
+/* Стили для вкладок */
+.guide-tabs {
+  display: flex;
+  margin-bottom: 20px;
+
+  border-bottom: 1px solid #eaeaea;
+}
+
+.tab-button {
+  padding: 12px 24px;
+  border-radius: 20px;
+  background: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.tab-button:hover {
+  color: #333;
+}
+
+.tab-button.active {
+
+  color: #FFF;
+  font-weight: 600;
+}
+
+
+
+/* Стили для дискуссий */
+.discussions-container {
+  padding: 20px;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+}
+
+.discussions-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+}
+
+.comment-form {
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.reply-indicator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.cancel-reply-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 2px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-reply-button:hover {
+  background-color: #eaeaea;
+}
+
+.comment-input {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.submit-comment-button {
+  background-color: #1a1a1a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  float: right;
+}
+
+.submit-comment-button:hover {
+  background-color: #333;
+}
+
+.comments-list {
+  margin-top: 50px;
+}
+
+.comment-thread {
+  margin-bottom: 30px;
+}
+
+.comment {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.comment.reply {
+  margin-left: 40px;
+  margin-bottom: 10px;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.comment-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.comment-author {
+  font-weight: 600;
+  font-size: 15px;
+  color: #222;
+}
+
+.comment-date {
+  font-size: 13px;
+  color: #888;
+}
+
+.comment-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.reply-button {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+}
+
+.reply-button:hover {
+  color: #333;
+  text-decoration: underline;
+}
+
+.comment-replies {
+  margin-left: 20px;
+  padding-left: 20px;
+  border-left: 2px solid #eaeaea;
+}
+
+.no-comments {
+  text-align: center;
+  padding: 30px;
+  color: #777;
+  font-style: italic;
+}
+
 /* Адаптивность для больших планшетов */
-/* @media (max-width: 992px) {
+@media (max-width: 992px) {
   .guide-header {
     gap: 24px;
   }
@@ -205,10 +402,10 @@
   .guide-title-container{
     height: 140px;
   }
-} */
+}
 
 /* Адаптивность для малых планшетов */
-/* @media (max-width: 768px) {
+@media (max-width: 768px) {
   .guide-viewer {
     padding: 16px;
   }
@@ -244,6 +441,20 @@
   
   .guide-tags {
     margin-bottom: 16px;
+  }
+  
+  .tab-button {
+    padding: 10px 16px;
+    font-size: 15px;
+  }
+  
+  .comment.reply {
+    margin-left: 20px;
+  }
+  
+  .comment-replies {
+    margin-left: 10px;
+    padding-left: 10px;
   }
 }
 
@@ -288,6 +499,24 @@
   .like-button {
     padding: 4px 10px;
   }
+  
+  .tab-button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .discussions-title {
+    font-size: 18px;
+  }
+  
+  .comment-input {
+    min-height: 80px;
+  }
+  
+  .submit-comment-button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 360px) {
@@ -311,4 +540,23 @@
     padding: 3px 8px;
     font-size: 12px;
   }
-} */
+  
+  .tab-button {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  
+  .comment-avatar {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .comment.reply {
+    margin-left: 15px;
+  }
+  
+  .comment-replies {
+    margin-left: 8px;
+    padding-left: 8px;
+  }
+}

@@ -22,7 +22,6 @@ function ProfileUserInfo({
           >
             {isLoading ? 'Saving...' : isEditing ? 'Save' : 'Change'}
           </button>
-          <button className="delete-button">Delete account</button>
         </div>
       </div>
 

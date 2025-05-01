@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef  } from 'react';
 import * as I from 'lucide-react';
 import EditGuide from '../EditGuide/EditGuide';
 // Import a markdown parser library (you would need to install this)
@@ -14,7 +14,11 @@ export default function GuideViewer() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const accessToken = localStorage.getItem('accessToken');
   const [editorModalOpen, setEditorModalOpen] = useState(false);
-
+  const [activeTab, setActiveTab] = useState('content');
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [replyTo, setReplyTo] = useState(null);
+  const commentInputRef = useRef(null);
 
   const handleLikeClick = async () => {
     if (liked) {
@@ -86,13 +90,79 @@ export default function GuideViewer() {
   useEffect(() => {
     setLikeCount(guideData.likes_count);
   }, [guideData.likes_count]);
+
+  const handleReply = (commentId) => {
+    setReplyTo(commentId);
+    if (commentInputRef.current) {
+      commentInputRef.current.focus();
+    }
+  };
+
+  const cancelReply = () => {
+    setReplyTo(null);
+  };
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+
+    try {
+      // Создаем новый комментарий
+      const newCommentData = {
+        id: Date.now(), // Временный ID, в реальном приложении будет присваиваться сервером
+        user: localStorage.getItem('username') || "CurrentUser",
+        avatar: `http://localhost:8000/user/avatar/${localStorage.getItem('username') || "CurrentUser"}`,
+        text: newComment,
+        created_at: new Date().toISOString(),
+        parent_id: replyTo,
+        replies: []
+      };
+
+      // Пример API вызова для отправки комментария
+      // Замените на свой реальный API endpoint
+      /* 
+      await axios.post(`http://localhost:8000/guide/comments/${id}`, {
+        text: newComment,
+        parent_id: replyTo
+      }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      */
+
+      // Обновляем локальное состояние комментариев
+      if (replyTo) {
+        // Добавляем ответ к родительскому комментарию
+        setComments(comments.map(comment => {
+          if (comment.id === replyTo) {
+            return {
+              ...comment,
+              replies: [...(comment.replies || []), newCommentData]
+            };
+          }
+          return comment;
+        }));
+      } else {
+        // Добавляем новый комментарий верхнего уровня
+        setComments([...comments, newCommentData]);
+      }
+
+      // Сбрасываем состояние
+      setNewComment('');
+      setReplyTo(null);
+    } catch (error) {
+      console.error('Ошибка при добавлении комментария:', error);
+    }
+  };
   
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
-
+  const formatTime = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -186,6 +256,23 @@ const handledelete = async () => {
             </div>
           </div>
 
+          <div className="guide-tabs">
+          <button 
+            className={`tab-button ${activeTab === 'content' ? 'active' : ''}`}
+            onClick={() => setActiveTab('content')}
+          >
+            Content
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'discussions' ? 'active' : ''}`}
+            onClick={() => setActiveTab('discussions')}
+          >
+            Discussions
+          </button>
+        </div>
+
+        {/* Контент вкладок */}
+        {activeTab === 'content' ? (
           <div className="guide-content">
             <div 
               className="markdown-container" 
@@ -198,8 +285,84 @@ const handledelete = async () => {
               <Markdown>{guideData.markdown_text}</Markdown>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="discussions-container">
+            <h2 className="discussions-title">Комментарии</h2>
+            
+            {/* Форма для добавления комментария */}
+            <div className="comment-form">
+              {replyTo && (
+                <div className="reply-indicator">
+                  <span>Ответ на комментарий #{replyTo}</span>
+                  <button className="cancel-reply-button" onClick={cancelReply}>
+                    <I.X size={16} />
+                  </button>
+                </div>
+              )}
+              <textarea
+                ref={commentInputRef}
+                className="comment-input"
+                placeholder={replyTo ? "Напишите ваш ответ..." : "Напишите ваш комментарий..."}
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              ></textarea>
+              <button className="submit-comment-button" onClick={handleAddComment}>
+                {replyTo ? "Ответить" : "Комментировать"}
+              </button>
+            </div>
+            
+            {/* Список комментариев */}
+            <div className="comments-list">
+              {comments.length > 0 ? (
+                comments.map(comment => (
+                  <div key={comment.id} className="comment-thread">
+                    <div className="comment">
+                      <div className="comment-avatar">
+                        <img src={comment.avatar} alt={`${comment.user} avatar`} />
+                      </div>
+                      <div className="comment-content">
+                        <div className="comment-header">
+                          <span className="comment-author">{comment.user}</span>
+                          <span className="comment-date">{formatTime(comment.created_at)}</span>
+                        </div>
+                        <div className="comment-text">{comment.text}</div>
+                        <button className="reply-button" onClick={() => handleReply(comment.id)}>
+                          <I.Reply size={16} /> Ответить
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Ответы на комментарий */}
+                    {comment.replies && comment.replies.length > 0 && (
+                      <div className="comment-replies">
+                        {comment.replies.map(reply => (
+                          <div key={reply.id} className="comment reply">
+                            <div className="comment-avatar">
+                              <img src={reply.avatar} alt={`${reply.user} avatar`} />
+                            </div>
+                            <div className="comment-content">
+                              <div className="comment-header">
+                                <span className="comment-author">{reply.user}</span>
+                                <span className="comment-date">{formatTime(reply.created_at)}</span>
+                              </div>
+                              <div className="comment-text">{reply.text}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="no-comments">
+                  <p>Пока нет комментариев. Будьте первым!</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
+    </div>
       <EditGuide
       isOpen={editorModalOpen} 
       onClose={() => setEditorModalOpen(false)}

@@ -17,6 +17,7 @@ export default function CatalogPage() {
   const [selectedTags, setSelectedTags] = useState([]);
   const type_tags = ["Food", "Trip", "Hotels"];
   const [countries, setCountries] = useState([]);
+  const [mobileFilterVisible, setMobileFilterVisible] = useState(false);
   
   // Получение данных с сервера
   useEffect(() => {
@@ -84,6 +85,11 @@ export default function CatalogPage() {
     });
   };
 
+  // Переключение видимости мобильного фильтра
+  const toggleMobileFilter = () => {
+    setMobileFilterVisible(!mobileFilterVisible);
+  };
+
   // Фильтрация гидов по тексту и выбранным тегам
   const filteredGuides = guides.filter(guide => {
     // Фильтрация по тексту
@@ -149,7 +155,7 @@ export default function CatalogPage() {
         </div>
         
         {/* Filter sidebar */}
-        <div className={`filter-sidebar`}>
+        <div className={`filter-sidebar ${mobileFilterVisible ? 'mobile-visible' : ''}`}>
           <h2 className="filter-title">Filters</h2>
           <div className="menuDivider"/>
           <div className="filter-group">
@@ -208,10 +214,18 @@ export default function CatalogPage() {
                   ))}
             </div>
           </div>
+          
+          {/* Mobile filter close button */}
+          <div className="mobile-filter-close" onClick={toggleMobileFilter}>
+            Close Filters
+          </div>
         </div>
+      </div>
+
+      {/* Mobile filter toggle button */}
+      <div className="mobile-filter-button" onClick={toggleMobileFilter}>
+        Filters
       </div>
     </div>
   );
 }
-
-// Экспортируем функцию получения доступных стран для использования в компоненте карты

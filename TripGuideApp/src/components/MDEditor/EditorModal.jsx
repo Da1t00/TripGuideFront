@@ -250,44 +250,46 @@ export default function EditorModal({ isOpen, onClose}) {
             <label>Tags</label>
             <div className="tagInputContainer">
               {/* Выбор типа */}
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="tagInput"
-              >
-                <option value="">Choose type/types of guide</option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-              <button
-                type="button"
-                className="addTagBtn"
-                disabled={isDisabled}
-                onClick={addTypeTag}
-              >
-                <I.Plus size={12} />
-              </button>
-
-              {/* Выбор страны */}
-              <select
-                value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
-                className="tagInput"
-              >
-                <option value="">Choose country/countries of guide</option>
-                {countries.filter((country) => country !== "Antarctica").map((country) => (
-                  <option key={country} value={country}>{country}</option>
-                ))}
-              </select>
-              <button
-                type="button"
-                className="addTagBtn"
-                disabled={isDisabled}
-                onClick={addCountryTag}
-              >
-                <I.Plus size={12} />
-              </button>
+              <div className='tagInputGroup'>
+                <select
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  className="tagInput"
+                >
+                  <option value="">Choose type/types of guide</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="addTagBtn"
+                  disabled={isDisabled}
+                  onClick={addTypeTag}
+                >
+                  <I.Plus size={12} />
+                </button>
+              </div>
+              <div className='tagInputGroup'>
+                <select
+                  value={selectedCountry}
+                  onChange={(e) => setSelectedCountry(e.target.value)}
+                  className="tagInput"
+                >
+                  <option value="">Choose country/countries of guide</option>
+                  {countries.filter((country) => country !== "Antarctica").map((country) => (
+                    <option key={country} value={country}>{country}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="addTagBtn"
+                  disabled={isDisabled}
+                  onClick={addCountryTag}
+                >
+                  <I.Plus size={12} />
+                </button>
+              </div>
             </div>
             
             {tags.length > 0 && (

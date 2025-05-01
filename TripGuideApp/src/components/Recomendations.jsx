@@ -9,16 +9,17 @@ export default function Recs() {
   
   // Получение данных с сервера
   useEffect(() => {
-    axios.get('http://localhost:8000/profile', {
+    axios.get('http://localhost:8000/recs', {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
       },
     })
     .then(response => {
-      setGuides(response.data.guides);
+      setGuides(response.data.recommendations);
+      console.log(response.data.recommendations);
     })
     .catch(error => {
-      console.error('Ошибка при получении каталога:', error);
+      console.error('Ошибка при получении recs:', error);
     });
   }, [accessToken]);
 

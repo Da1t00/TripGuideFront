@@ -292,13 +292,9 @@ export default function Authorize({ onClose }) {
         console.error("Auth error:", error);
         
         if (error.response) {
-          // Extract error message from server response
+
           const errorMessage = error.response.data.detail || "Authentication failed";
-          
-          // Display all server errors in the top message component
-          setErrorMessage(errorMessage);
-          
-          // Format specific error messages for better readability
+
           if (errorMessage.includes("email already exists")) {
             setErrorMessage("User with this email already exists");
           } else if (errorMessage.includes("nickname already exists")) {
@@ -314,10 +310,9 @@ export default function Authorize({ onClose }) {
           }
           
         } else if (error.request) {
-          // The request was made but no response was received
           setErrorMessage("Error: No response from server. Please try again later.");
         } else {
-          setErrorMessage(`Error: ${error.message}`);
+          setErrorMessage(``);
         }
       }
     }

@@ -258,6 +258,7 @@
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s;
+  height: 42px;
 }
 
 .addTagBtn:hover {
@@ -360,6 +361,10 @@
     padding: 8px 10px;
     font-size: 0.95rem;
   }
+  .tagInputGroup{
+    display: flex;
+    gap: 8px;
+  }
   
   .editorModalFooter {
     padding-top: 12px;
@@ -442,6 +447,7 @@
   
   .addTagBtn {
     align-self: flex-start;
+    height: 36px;
   }
   
   .tagItem {

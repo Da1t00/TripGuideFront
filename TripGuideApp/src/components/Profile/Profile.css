@@ -172,7 +172,7 @@
   }
   
   /* Responsive styles */
-  /* @media (max-width: 1440px) {
+  @media (max-width: 1440px) {
     .profile-container {
       margin-inline: 100px;
     }
@@ -235,4 +235,4 @@
     .guide-logo {
       max-height: 120px;
     }
-  } */
+  }

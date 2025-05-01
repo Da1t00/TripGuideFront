@@ -95,7 +95,7 @@
 }
 
 /* Media queries for responsive design */
-/* @media (max-width: 768px) {
+@media (max-width: 768px) {
   .banner {
     flex-direction: column;
     align-items: center;
@@ -148,4 +148,4 @@
   .GuideBannerDiv {
     min-height: 75vh;
   }
-} */
+}
