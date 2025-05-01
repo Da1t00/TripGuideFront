@@ -1,45 +1,122 @@
-import { useState, useEffect, useRef  } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import * as I from 'lucide-react';
-import EditGuide from '../EditGuide/EditGuide';
+
 // Import a markdown parser library (you would need to install this)
 import Markdown from 'markdown-to-jsx';
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
+import EditGuide from '../EditGuide/EditGuide';
 
-export default function GuideViewer() {
+export default function MyGuideViewer() {
   const { id } = useParams();
   const [guideData, setGuideData] = useState([]);
-  const [liked, setLiked] = useState(guideData.liked_by_user);
+  const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const accessToken = localStorage.getItem('accessToken');
-  const [editorModalOpen, setEditorModalOpen] = useState(false);
+  const userData = JSON.parse(localStorage.getItem('userData'));
   const [activeTab, setActiveTab] = useState('content');
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState(null);
   const commentInputRef = useRef(null);
+  const [editorModalOpen, setEditorModalOpen] = useState(false);
+
 
   const handleLikeClick = async () => {
     if (liked) {
       setLikeCount(likeCount - 1);
-      try {
-          await likeGuide(id); 
-      } catch (error) {
-        console.error('Ошибка при лайке:', error);
-      }
     } else {
       setLikeCount(likeCount + 1);
-      try {
-        await likeGuide(id);
-      } catch (error) {
-        console.error('Ошибка при лайке:', error);
-      }
     }
     setLiked(!liked);
-    console.log(guideData);
+    
+    try {
+      await likeGuide(id);
+    } catch (error) {
+      console.error('Ошибка при лайке:', error);
+      // Revert state if API call fails
+      setLiked(liked);
+      setLikeCount(liked ? likeCount : likeCount - 1);
+    }
   };
 
+  const handleCommentLikeClick = (commentId) => async () => {
+    try {
+      // Find the comment to update
+      const updatedComments = comments.map(comment => {
+        if (comment.id === commentId) {
+          // Toggle like status and count
+          const newLikedStatus = !comment.liked_by_user;
+          const newLikeCount = newLikedStatus 
+            ? (comment.like_count || 0) + 1 
+            : (comment.like_count || 0) - 1;
+          
+          return {
+            ...comment,
+            liked_by_user: newLikedStatus,
+            like_count: newLikeCount >= 0 ? newLikeCount : 0
+          };
+        } else if (comment.replies) {
+          // Check for the comment in replies
+          const updatedReplies = comment.replies.map(reply => {
+            if (reply.id === commentId) {
+              const newLikedStatus = !reply.liked_by_user;
+              const newLikeCount = newLikedStatus 
+                ? (reply.like_count || 0) + 1 
+                : (reply.like_count || 0) - 1;
+              
+              return {
+                ...reply,
+                liked_by_user: newLikedStatus,
+                like_count: newLikeCount >= 0 ? newLikeCount : 0
+              };
+            }
+            return reply;
+          });
+          
+          return {
+            ...comment,
+            replies: updatedReplies
+          };
+        }
+        
+        return comment;
+      });
+      
+      // Update state immediately for responsive UI
+      setComments(updatedComments);
+      
+      // Make API call to update like status on the server
+      await likeComment(commentId);
+      
+    } catch (error) {
+      console.error('Ошибка при лайке комментария:', error);
+      // Revert to original comments if API call fails
+      // You could implement this by keeping a copy of the original comments before updating
+    }
+  };
+
+  // API call to like a comment
+  const likeComment = async (commentId) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/comments/like/${commentId}/`, 
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      
+      console.log('Ответ при лайке комментария:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Ошибка при отправке лайка комментария:', error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     axios.get(`http://localhost:8000/guide/read_guide/${id}`,
@@ -51,26 +128,102 @@ export default function GuideViewer() {
      )
       .then(response => {
         console.log('Ответ от сервера:', response.data);
-        setGuideData(response.data);
-        setLiked(response.data.liked_by_user);
+        setGuideData(response.data.guide);
+        setLiked(response.data.guide.liked_by_user);
+        setComments(response.data.discussion || []); // Убедитесь, что комментарии приходят в правильном формате
       })  
       .catch(error => {
-        console.log('Ответ от сервера:', error.response.data);
+        console.log('Ответ от сервера:', error.response?.data);
         console.error('Ошибка при получении каталога:', error);
       });
-  }, [id,accessToken]); 
+  }, [id, accessToken]); 
 
- 
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+
+    try {
+      // Prepare the comment data
+      const commentData = {
+        guide_id: id,
+        text: newComment,
+        parent_id: replyTo
+      };
+      
+      // Create new comment object for immediate UI update
+      const tempNewComment = {
+        id: Date.now(), // Temporary ID, server will assign the real one
+        author: userData.nickname,
+        text: newComment,
+        created_at: new Date().toISOString(),
+        parent_id: replyTo,
+        replies: [],
+        like_count: 0,
+        liked_by_user: false
+      };
+      
+      // Update UI immediately for better UX
+      console.log(tempNewComment)
+      if (replyTo) {
+        // Add reply to existing comment
+        setComments(comments.map(comment => {
+          if (comment.id === replyTo) {
+            return {
+              ...comment,
+              replies: [...(comment.replies || []), tempNewComment]
+            };
+          }
+          return comment;
+        }));
+      } else {
+        // Add new top-level comment
+        setComments([...comments, tempNewComment]);
+      }
+      
+      // Reset form
+      setNewComment('');
+      setReplyTo(null);
+      console.log('Новый комментарий:', commentData);
+      // Make API call to save comment on server
+      const response = await axios.post(
+        `http://localhost:8000/comments/add`,
+        commentData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      
+      console.log('Комментарий успешно добавлен:', response.data, tempNewComment);
+      
+      // If needed, update the comment with server-generated ID and other data
+      // This would require fetching the updated comments list or handling the server response
+      
+    } catch (error) {
+      console.error('Ошибка при добавлении комментария:', error);
+      // You could show an error message here and revert the UI changes
+    }
+  };
+
+  const handleReply = (commentId) => {
+    setReplyTo(commentId);
+    if (commentInputRef.current) {
+      commentInputRef.current.focus();
+    }
+  };
+
+  const cancelReply = () => {
+    setReplyTo(null);
+  };
   
   const getEditorHeight = () => {
     if (windowWidth <= 480) return '400px';
     if (windowWidth <= 768) return '500px';
     return '600px';
   };
+
   const likeGuide = async (guideId) => {
     try {
-      
-  
       const response = await axios.post(`http://localhost:8000/guide/like/${guideId}/`, {},
         {
           headers: {
@@ -90,78 +243,37 @@ export default function GuideViewer() {
   useEffect(() => {
     setLikeCount(guideData.likes_count);
   }, [guideData.likes_count]);
-
-  const handleReply = (commentId) => {
-    setReplyTo(commentId);
-    if (commentInputRef.current) {
-      commentInputRef.current.focus();
+  
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Invalid date';
+  
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date string passed to formatDate:', dateString);
+      return 'Invalid date';
     }
-  };
-
-  const cancelReply = () => {
-    setReplyTo(null);
-  };
-  const handleAddComment = async () => {
-    if (!newComment.trim()) return;
-
-    try {
-      // Создаем новый комментарий
-      const newCommentData = {
-        id: Date.now(), // Временный ID, в реальном приложении будет присваиваться сервером
-        user: localStorage.getItem('username') || "CurrentUser",
-        avatar: `http://localhost:8000/user/avatar/${localStorage.getItem('username') || "CurrentUser"}`,
-        text: newComment,
-        created_at: new Date().toISOString(),
-        parent_id: replyTo,
-        replies: []
-      };
-
-      // Пример API вызова для отправки комментария
-      // Замените на свой реальный API endpoint
-      /* 
-      await axios.post(`http://localhost:8000/guide/comments/${id}`, {
-        text: newComment,
-        parent_id: replyTo
-      }, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      */
-
-      // Обновляем локальное состояние комментариев
-      if (replyTo) {
-        // Добавляем ответ к родительскому комментарию
-        setComments(comments.map(comment => {
-          if (comment.id === replyTo) {
-            return {
-              ...comment,
-              replies: [...(comment.replies || []), newCommentData]
-            };
-          }
-          return comment;
-        }));
-      } else {
-        // Добавляем новый комментарий верхнего уровня
-        setComments([...comments, newCommentData]);
-      }
-
-      // Сбрасываем состояние
-      setNewComment('');
-      setReplyTo(null);
-    } catch (error) {
-      console.error('Ошибка при добавлении комментария:', error);
-    }
+  
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  
+    return formatter.format(date);
   };
   
-
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
   const formatTime = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const date = new Date(dateString);
+    date.setHours(date.getHours());
+    return date.toLocaleString('ru-RU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   useEffect(() => {
@@ -175,49 +287,49 @@ export default function GuideViewer() {
 
   const openEditorModal = () => {
     setEditorModalOpen(true);
-};
-const handledelete = async () => {
-  const accessToken = localStorage.getItem('accessToken');
+  };
   
-
-  try {
-    await axios.delete(`http://localhost:8000/guide/delete/${id}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-    alert('Guide delete successfully!');
-    window.location.href = '/profile'; // Redirect to the profile page after deletion
-  } catch (error) {
-    console.error('Error edit guide:', error.response?.data || error.message);
-    alert('Error edit guide!');
-  }
-};
+  const handleDelete = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+    
+    try {
+      await axios.delete(`http://localhost:8000/guide/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      alert('Guide deleted successfully!');
+      window.location.href = '/profile'; // Redirect to the profile page after deletion
+    } catch (error) {
+      console.error('Error deleting guide:', error.response?.data || error.message);
+      alert('Error deleting guide!');
+    }
+  };
 
   return (
     <>
       <div className="guide-viewer-container">
         <div className="guide-viewer">
           <div className="guide-header">
-          <div className="guide-logo-container">
-            <img 
-              src={`http://localhost:8000/guide/get_guide_logo/${id}`} 
-              alt={`Превью для ${guideData.title}`} 
-              className="guide-logo" 
-            />
-            <div className="guide-author-info">
-              <div className="author-avatar">
-                <img 
-                  src={`http://localhost:8000/user/avatar/${guideData.author}`} 
-                  alt={`Аватар ${guideData.author}`} 
-                />
-              </div>
-              <div className="author-details">
-                <div className="author-name">{guideData.author}</div>
-                <div className="guide-date">{formatDate(guideData.created_at)}</div>
+            <div className="guide-logo-container">
+              <img 
+                src={`http://localhost:8000/guide/get_guide_logo/${id}`} 
+                alt={`Превью для ${guideData.title}`} 
+                className="guide-logo" 
+              />
+              <div className="guide-author-info">
+                <div className="author-avatar">
+                  <img 
+                    src={`http://localhost:8000/user/avatar/${guideData.author}`} 
+                    alt={`Аватар ${guideData.author}`} 
+                  />
+                </div>
+                <div className="author-details">
+                  <div className="author-name">{guideData.author}</div>
+                  <div className="guide-date">{formatDate(guideData.created_at)}</div>
+                </div>
               </div>
             </div>
-          </div>
             
             <div className="guide-meta">
               <div className='guide-title-container'> 
@@ -225,13 +337,13 @@ const handledelete = async () => {
                 <p className="guide-description">{guideData.description}</p>
               </div>
               <div className="guide-stats">
-              <div className="guide-tags">
-              {Array.isArray(guideData.tags) && guideData.tags.map((tag, index) => (
-                <span key={index} className="guide-tag">{tag}</span>
-              ))}
-              </div>
-              <div className="guide-buttons-container">
-                <button 
+                <div className="guide-tags">
+                  {Array.isArray(guideData.tags) && guideData.tags.map((tag, index) => (
+                    <span key={index} className="guide-tag">{tag}</span>
+                  ))}
+                </div>
+                <div className="guide-buttons-container">
+                  <button 
                     className={`like-button ${liked ? 'liked' : ''}`}
                     onClick={handleLikeClick}
                     aria-label={liked ? "Убрать лайк" : "Поставить лайк"}
@@ -247,128 +359,149 @@ const handledelete = async () => {
                   </button>
                   <button 
                     className={`edit-button`}
-                    onClick={handledelete}
+                    onClick={handleDelete}
                   >
                     <I.Trash2 color='black' />
                   </button>
                 </div>
-            </div>
+              </div>
             </div>
           </div>
 
+          {/* Вкладки */}
           <div className="guide-tabs">
-          <button 
-            className={`tab-button ${activeTab === 'content' ? 'active' : ''}`}
-            onClick={() => setActiveTab('content')}
-          >
-            Content
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'discussions' ? 'active' : ''}`}
-            onClick={() => setActiveTab('discussions')}
-          >
-            Discussions
-          </button>
-        </div>
-
-        {/* Контент вкладок */}
-        {activeTab === 'content' ? (
-          <div className="guide-content">
-            <div 
-              className="markdown-container" 
-              style={{ 
-                height: getEditorHeight(),
-                overflow: 'auto',
-                padding: '20px'
-              }}
+            <button 
+              className={`tab-button ${activeTab === 'content' ? 'active' : ''}`}
+              onClick={() => setActiveTab('content')}
             >
-              <Markdown>{guideData.markdown_text}</Markdown>
-            </div>
+              Content
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'discussions' ? 'active' : ''}`}
+              onClick={() => setActiveTab('discussions')}
+            >
+              Discussions
+            </button>
           </div>
-        ) : (
-          <div className="discussions-container">
-            <h2 className="discussions-title">Комментарии</h2>
-            
-            {/* Форма для добавления комментария */}
-            <div className="comment-form">
-              {replyTo && (
-                <div className="reply-indicator">
-                  <span>Ответ на комментарий #{replyTo}</span>
-                  <button className="cancel-reply-button" onClick={cancelReply}>
-                    <I.X size={16} />
-                  </button>
-                </div>
-              )}
-              <textarea
-                ref={commentInputRef}
-                className="comment-input"
-                placeholder={replyTo ? "Напишите ваш ответ..." : "Напишите ваш комментарий..."}
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              ></textarea>
-              <button className="submit-comment-button" onClick={handleAddComment}>
-                {replyTo ? "Ответить" : "Комментировать"}
-              </button>
+
+          {/* Контент вкладок */}
+          {activeTab === 'content' ? (
+            <div className="guide-content">
+              <div 
+                className="markdown-container" 
+                style={{ 
+                  height: getEditorHeight(),
+                  overflow: 'auto',
+                  padding: '20px'
+                }}
+              >
+                <Markdown>{guideData.markdown_text}</Markdown>
+              </div>
             </div>
-            
-            {/* Список комментариев */}
-            <div className="comments-list">
-              {comments.length > 0 ? (
-                comments.map(comment => (
-                  <div key={comment.id} className="comment-thread">
-                    <div className="comment">
-                      <div className="comment-avatar">
-                        <img src={comment.avatar} alt={`${comment.user} avatar`} />
-                      </div>
-                      <div className="comment-content">
-                        <div className="comment-header">
-                          <span className="comment-author">{comment.user}</span>
-                          <span className="comment-date">{formatTime(comment.created_at)}</span>
-                        </div>
-                        <div className="comment-text">{comment.text}</div>
-                        <button className="reply-button" onClick={() => handleReply(comment.id)}>
-                          <I.Reply size={16} /> Ответить
-                        </button>
-                      </div>
-                    </div>
-                    
-                    {/* Ответы на комментарий */}
-                    {comment.replies && comment.replies.length > 0 && (
-                      <div className="comment-replies">
-                        {comment.replies.map(reply => (
-                          <div key={reply.id} className="comment reply">
-                            <div className="comment-avatar">
-                              <img src={reply.avatar} alt={`${reply.user} avatar`} />
-                            </div>
-                            <div className="comment-content">
-                              <div className="comment-header">
-                                <span className="comment-author">{reply.user}</span>
-                                <span className="comment-date">{formatTime(reply.created_at)}</span>
-                              </div>
-                              <div className="comment-text">{reply.text}</div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+          ) : (
+            <div className="discussions-container">
+              <h2 className="discussions-title">Комментарии</h2>
+              
+              {/* Форма для добавления комментария */}
+              <div className="comment-form">
+                {replyTo && (
+                  <div className="reply-indicator">
+                    <span>Ответ на комментарий #{replyTo}</span>
+                    <button className="cancel-reply-button" onClick={cancelReply}>
+                      <I.X size={16} />
+                    </button>
                   </div>
-                ))
-              ) : (
-                <div className="no-comments">
-                  <p>Пока нет комментариев. Будьте первым!</p>
-                </div>
-              )}
+                )}
+                <textarea
+                  ref={commentInputRef}
+                  className="comment-input"
+                  placeholder={replyTo ? "Напишите ваш ответ..." : "Напишите ваш комментарий..."}
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                ></textarea>
+                <button className="submit-comment-button" onClick={handleAddComment}>
+                  {replyTo ? "Ответить" : "Комментировать"}
+                </button>
+              </div>
+              
+              {/* Список комментариев */}
+              <div className="comments-list">
+                {comments.length > 0 ? (
+                  comments.map(comment => (
+                    <div key={comment.id} className="comment-thread">
+                      <div className="comment">
+                        <div className="comment-avatar">
+                          <img src={`http://localhost:8000/user/avatar/${comment.author}`} alt={`${comment.author} avatar`} />
+                        </div>
+                        <div className="comment-content">
+                          <div className="comment-header">
+                            <span className="comment-author">{comment.author}</span>
+                            <span className="comment-date">{formatTime(comment.created_at)}</span>
+                          </div>
+                          <div className="comment-text">{comment.text}</div>
+                          <div style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
+                            <button className="reply-button" onClick={() => handleReply(comment.id)}>
+                              <I.Reply size={16} /> Ответить
+                            </button>
+                            <button 
+                              className={`com-like-button ${comment.liked_by_user ? 'liked' : ''}`}
+                              onClick={handleCommentLikeClick(comment.id)}
+                              aria-label={comment.liked_by_user ? "Убрать лайк" : "Поставить лайк"}
+                            >
+                              {comment.liked_by_user ? <I.Heart fill="red" color="red" /> : <I.Heart />}
+                              <span className="like-count">{comment.like_count || 0}</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Ответы на комментарий */}
+                      {comment.replies && comment.replies.length > 0 && (
+                        <div className="comment-replies">
+                          {comment.replies.map(reply => (
+                            <div key={reply.id} className="comment reply">
+                              <div className="comment-avatar">
+                                <img src={`http://localhost:8000/user/avatar/${reply.author}`} alt={`${reply.author} avatar`} />
+                              </div>
+                              <div className="comment-content">
+                                <div className="comment-header">
+                                  <span className="comment-author">{reply.author}</span>
+                                  <span className="comment-date">{formatTime(reply.created_at)}</span>
+                                </div>
+                                <div className="comment-text">{reply.text}</div>
+                                <div style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
+                                  <button 
+                                    className={`com-like-button ${reply.liked_by_user ? 'liked' : ''}`}
+                                    onClick={handleCommentLikeClick(reply.id)}
+                                    aria-label={reply.liked_by_user ? "Убрать лайк" : "Поставить лайк"}
+                                  >
+                                    {reply.liked_by_user ? <I.Heart fill="red" color="red" /> : <I.Heart />}
+                                    <span className="like-count">{reply.like_count || 0}</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-comments">
+                    <p>Пока нет комментариев. Будьте первым!</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
       <EditGuide
-      isOpen={editorModalOpen} 
-      onClose={() => setEditorModalOpen(false)}
-      guide={guideData}
-      id={id}
+        isOpen={editorModalOpen} 
+        onClose={() => setEditorModalOpen(false)}
+        guide={guideData}
+        id={id}
       />
-  </>
+    </>
   );
 }

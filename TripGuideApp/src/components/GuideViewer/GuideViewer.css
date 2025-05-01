@@ -366,6 +366,17 @@
   gap: 4px;
   padding: 0;
 }
+.com-like-button {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+}
 
 .reply-button:hover {
   color: #333;

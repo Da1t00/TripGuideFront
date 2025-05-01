@@ -13,6 +13,7 @@ export default function MyGuideViewer() {
   const [likeCount, setLikeCount] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const accessToken = localStorage.getItem('accessToken');
+  const userData = JSON.parse(localStorage.getItem('userData'));
   const [activeTab, setActiveTab] = useState('content');
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -98,7 +99,7 @@ export default function MyGuideViewer() {
   const likeComment = async (commentId) => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/comments/like_comment/${commentId}/`, 
+        `http://localhost:8000/comments/like/${commentId}/`, 
         {},
         {
           headers: {
@@ -149,7 +150,7 @@ export default function MyGuideViewer() {
       // Create new comment object for immediate UI update
       const tempNewComment = {
         id: Date.now(), // Temporary ID, server will assign the real one
-        author: (localStorage.getItem('userData')).nickname,
+        author: userData.nickname,
         text: newComment,
         created_at: new Date().toISOString(),
         parent_id: replyTo,
@@ -267,7 +268,7 @@ export default function MyGuideViewer() {
   
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    date.setHours(date.getHours() + 3);
+    date.setHours(date.getHours());
     return date.toLocaleString('ru-RU', {
       year: 'numeric',
       month: 'long',
@@ -411,7 +412,7 @@ export default function MyGuideViewer() {
                             <I.Reply size={16} /> Ответить
                           </button>
                           <button 
-                            className={`like-button ${comment.liked_by_user ? 'liked' : ''}`}
+                            className={`com-like-button ${comment.liked_by_user ? 'liked' : ''}`}
                             onClick={handleCommentLikeClick(comment.id)}
                             aria-label={comment.liked_by_user ? "Убрать лайк" : "Поставить лайк"}
                           >
@@ -438,7 +439,7 @@ export default function MyGuideViewer() {
                               <div className="comment-text">{reply.text}</div>
                               <div style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
                                 <button 
-                                  className={`like-button ${reply.liked_by_user ? 'liked' : ''}`}
+                                  className={`com-like-button ${reply.liked_by_user ? 'liked' : ''}`}
                                   onClick={handleCommentLikeClick(reply.id)}
                                   aria-label={reply.liked_by_user ? "Убрать лайк" : "Поставить лайк"}
                                 >
