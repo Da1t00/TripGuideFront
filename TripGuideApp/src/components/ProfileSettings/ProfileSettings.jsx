@@ -2,8 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ProfileSettings.css';
 import ProfileImage from './ProfileImage';
-import ProfileUserInfo from './ProfileUserInfo'; // Import the new component
+import ProfileUserInfo from './ProfileUserInfo'; 
+import { toast } from 'react-toastify';
 
+const toastConfig = {
+  position: "top-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
 export default function ProfileSettings() {
   const [profileImage, setProfileImage] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -49,6 +59,10 @@ export default function ProfileSettings() {
       return false;
     } finally {
       setIsLoading(false);
+      toast.success('Profile info successfully updated!', {
+        ...toastConfig,
+        autoClose: 5000
+      });
     }
   };
 

@@ -5,6 +5,18 @@ import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
 import 'react-markdown-editor-lite/lib/index.css';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const toastConfig = {
+  position: "top-right",
+  autoClose: 3000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
  
 const mdParser = new MarkdownIt({
   html: false,
@@ -23,6 +35,7 @@ export default function EditorModal({ isOpen, onClose}) {
   const [description, setDescription] = useState('');
   const [isDisabled, setIsDisabled] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   useEffect(() => {
     if (isOpen) {
@@ -34,6 +47,7 @@ export default function EditorModal({ isOpen, onClose}) {
       setSelectedCountry('');
       setTags([]);
       setIsDisabled(false);
+      setIsSubmitting(false);
     }
   }, [isOpen]);
   
@@ -64,7 +78,8 @@ export default function EditorModal({ isOpen, onClose}) {
       
       return response.data.image_url;
     } catch (error) {
-      console.error( error);
+      console.error(error);
+      toast.error('Failed to upload image. Please try again.', toastConfig);
       return null;
     }
   };
@@ -85,7 +100,8 @@ export default function EditorModal({ isOpen, onClose}) {
         reader.readAsDataURL(file);
       });
     } catch (error) {
-      console.error( error);
+      console.error(error);
+      toast.error('Failed to process image. Please try again.', toastConfig);
       return null;
     }
   };
@@ -115,27 +131,72 @@ export default function EditorModal({ isOpen, onClose}) {
     });
   
     try {
-      await axios.post('http://localhost:8000/guide/save_guide', formData, {
+      const response = await axios.post('http://localhost:8000/guide/save_guide', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${accessToken}`
         }
       });
-    } catch (error) {
-      console.error( error.response?.data || error.message);
 
+      toast.success('Guide successfully published!', {
+        ...toastConfig,
+        autoClose: 5000 
+      });
+      
+      return response;
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      
+      toast.error(error.response?.data?.detail || 'Failed to publish guide. Please try again.', {
+        ...toastConfig,
+        autoClose: 5000
+      });
+      
+      return false;
     }
   };
   
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim()) {
-
+    
+    if (isSubmitting) {
       return;
     }
-    handleSaveContent();
-    onClose();
+    
+    if (!title.trim()) {
+      toast.warning('Title is required', toastConfig);
+      return;
+    }
+    
+    if (!description.trim()) {
+      toast.warning('Description is required', toastConfig);
+      return;
+    }
+    
+    if (!logoFile) {
+      toast.warning('Logo image is required', toastConfig);
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    const toastId = toast.info('Publishing your Guide...', {
+      ...toastConfig,
+      autoClose: false 
+    });
+    
+    const success = await handleSaveContent();
+    
+    toast.dismiss(toastId);
+    
+    if (success) {
+     
+      onClose();
+      setIsSubmitting(false); 
+    } else {
+      setIsSubmitting(false);
+    }
   };
 
   const [selectedType, setSelectedType] = useState('');
@@ -151,11 +212,11 @@ export default function EditorModal({ isOpen, onClose}) {
         const data = await res.json();
         const countryNames = data.features.map(d => d.properties.name);
   
-        // Сортировка
         countryNames.sort((a, b) => a.localeCompare(b));
         setCountries(countryNames);
       } catch (error) {
         console.error(error);
+        toast.error('Failed to load countries list', toastConfig);
       }
     };
     fetchCountries();
@@ -170,6 +231,10 @@ export default function EditorModal({ isOpen, onClose}) {
     }
     if (tags.length == 5) {
       setIsDisabled(true); 
+      toast.info('Maximum 6 tags allowed', {
+        ...toastConfig,
+        autoClose: 2000
+      });
     }
   };
 
@@ -182,11 +247,16 @@ export default function EditorModal({ isOpen, onClose}) {
     }
     if (tags.length == 5) {
       setIsDisabled(true); 
+      toast.info('Maximum 6 tags allowed', {
+        position: "top-right",
+        autoClose: 2000
+      });
     }
   };
 
   const removeTag = (tagToRemove) => {
     setTags(tags.filter(tag => tag !== tagToRemove));
+    setIsDisabled(false);
   };
   
 
@@ -194,11 +264,16 @@ export default function EditorModal({ isOpen, onClose}) {
 
   return (
     <>
-      <div className="editorModalOverlay" onClick={onClose}></div>
+      <div className="editorModalOverlay" onClick={isSubmitting ? null : onClose}></div>
       <div className="editorModal">
         <div className="editorModalHeader">
-          <h2>{isMobile ? 'New Post' : 'Create New Post'}</h2>
-          <button className="closeModalBtn" onClick={onClose} aria-label="Close editor">
+          <h2>{isMobile ? 'New guide' : 'Create New guide'}</h2>
+          <button 
+            className="closeModalBtn" 
+            onClick={onClose} 
+            aria-label="Close editor"
+            disabled={isSubmitting}
+          >
             <I.X size={isMobile ? 20 : 24} color="#333" />
           </button>
         </div>
@@ -212,7 +287,7 @@ export default function EditorModal({ isOpen, onClose}) {
               maxLength="80"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter post title"
+              placeholder="Enter guide title"
               className="titleInput"
               required
             />
@@ -221,25 +296,23 @@ export default function EditorModal({ isOpen, onClose}) {
               name="textarea"
               value={description}
               maxLength="300"
-
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter post description"
+              placeholder="Enter guide description"
               className="descriptionInput"
               required
             />
-            <label>Post logo image</label>
+            <label>Guide logo image</label>
             <input
               type="file"
               id="logoFile"
               onChange={handleLogoChange}
-              placeholder="Enter post logo"
+              placeholder="Enter guide logo"
               className="logoInput"
               required
             />
             
             <label>Tags</label>
             <div className="tagInputContainer">
-
               <div className='tagInputGroup'>
                 <select
                   value={selectedType}
@@ -330,11 +403,11 @@ export default function EditorModal({ isOpen, onClose}) {
           </div>
           
           <div className="editorModalFooter">
-            <button type="button" className="cancelBtn" onClick={onClose}>
+            <button type="button" className="cancelBtn" onClick={onClose} disabled={isSubmitting}>
               Cancel
             </button>
-            <button type="submit" className="saveBtn">
-              Publish
+            <button type="submit" className="saveBtn" disabled={isSubmitting}>
+              {isSubmitting ? 'Publishing...' : 'Publish'}
             </button>
           </div>
         </form>

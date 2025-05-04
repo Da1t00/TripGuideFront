@@ -1,6 +1,8 @@
 import './App.css'
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Header from './components/Header/Header'
 import WorldMap from './components/Map'
@@ -13,13 +15,13 @@ import GuideViewer from './components/GuideViewer/GuideViewer';
 import CatalogPage from './components/CatalogPage/CatalogPage';
 import EditGuide from './components/EditGuide/EditGuide';
 import MyGuideViewer from './components/MyGuideViewer/MyGuideViewer';
-import 'react-toastify/dist/ReactToastify.css';
 import Recs from './components/Recomendations';
 
 export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -34,10 +36,11 @@ export default function App() {
     setIsAuthenticated(!!accessToken);
   }, []);
 
+
   useEffect(() => {
     const interval = setInterval(() => {
       refreshToken();
-    },25 * 60 * 1000); // 25 минут
+    }, 25 * 60 * 1000); // 25 минут
 
     return () => clearInterval(interval);
   }, []);
@@ -61,10 +64,25 @@ export default function App() {
         onSignInClick={() => setIsAuthOpen(true)} 
         isAuthenticated={isAuthenticated}
       />
+      
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        limit={3}
+        style={{ marginTop: '80px' }} 
+      />
+      
       {isAuthOpen && (
         <Authorize onClose={handleAuthClose} />
       )}
-      
+
       <div style={{marginTop:"80px"}}>
         <Routes>
           <Route path="/" element={
@@ -73,13 +91,11 @@ export default function App() {
                {!isMobile && (
                  <div style={{backgroundColor:"#FDF6e3"}}><WorldMap/></div>
                )}
-
             </>
           } />
            <Route path="/catalog" element={
             <ProtectedRoute>
               <CatalogPage/>
-              
             </ProtectedRoute>
           } />
           <Route path="/catalog/view_guide/:id" element={

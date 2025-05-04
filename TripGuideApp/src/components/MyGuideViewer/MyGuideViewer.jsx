@@ -4,6 +4,16 @@ import Markdown from 'markdown-to-jsx';
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
 import EditGuide from '../EditGuide/EditGuide';
+import { toast } from 'react-toastify';
+const toastConfig = {
+  position: "top-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
 
 export default function MyGuideViewer() {
   const { id } = useParams();
@@ -33,7 +43,6 @@ export default function MyGuideViewer() {
       await likeGuide(id);
     } catch (error) {
       console.error(error);
-      // Revert state if API call fails
       setLiked(liked);
       setLikeCount(liked ? likeCount : likeCount - 1);
     }
@@ -283,9 +292,18 @@ export default function MyGuideViewer() {
           Authorization: `Bearer ${accessToken}`
         }
       });
-      window.location.href = '/profile'; 
+      
+
+      toast.success('Guide deleted successfully!', toastConfig);
+      
+      
+      setTimeout(() => {
+        window.location.href = '/profile';
+      }, 5000); 
+      
     } catch (error) {
       console.error(error.response?.data || error.message);
+      toast.error('Failed to delete guide. Please try again.', toastConfig);
     }
   };
 

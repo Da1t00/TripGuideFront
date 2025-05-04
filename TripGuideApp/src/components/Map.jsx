@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography, Graticule } from "react-simple-maps";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // Предполагается, что вы используете react-toastify для уведомлений
+import { toast } from "react-toastify"; 
 import axios from "axios";
 import { useEffect } from "react";
 
@@ -47,8 +47,8 @@ const WorldMap = () => {
         } 
       });
     } else {
-      toast.info(`Гидов по стране ${countryName} пока нет`, {
-        position: "top-center",
+      toast.info(`No guides for ${countryName} yet`, {
+        position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
